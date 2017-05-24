@@ -44,3 +44,6 @@ class TestPlugin(unittest.TestCase):
         # assert deployment outputs are ok
         self.assertDictEqual(cfy_local.outputs(),
                              {'test_output': 'new_test_input'})
+
+    def test_another_one(self):
+        print "test_another_one !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1"
