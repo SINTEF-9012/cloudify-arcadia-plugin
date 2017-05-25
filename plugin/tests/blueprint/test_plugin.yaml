@@ -18,3 +18,25 @@ plugins:
         #         the plugin if it is included in the the blueprint directory under the
         #         "plugins" directory. Not required in testing environments as the plugin
         #         need not be installed on any agent
+
+node_types:
+    cloudify.arcadia.nodes.Testnode:
+        derived_from: cloudify.nodes.Root
+        properties:
+            use_external_resource:
+                description: >
+                    Test property
+                type: boolean
+                default: false
+                required: false
+            parameters:
+                description: >
+                    Some test parameters
+                default: {}
+                required: false
+        interfaces:
+            cloudify.interfaces.lifecycle:
+                start:
+                    implementation: plugin_name.plugin.tasks.my_task
+                    inputs:
+                        some_property:

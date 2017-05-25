@@ -26,6 +26,7 @@ class TestPlugin(unittest.TestCase):
                    resources_to_copy=[path.join('blueprint',
                                                 'test_plugin.yaml')],
                    inputs={'test_input': 'new_test_input'})
+                   #)
     def test_my_task(self, cfy_local):
         # execute install workflow
         """
