@@ -19,9 +19,21 @@ from cloudify import ctx
 
 # put the operation decorator on any function that is a task
 from cloudify.decorators import operation
+from cloudify.decorators import workflow
+
+
+#@operation
+#def my_task(some_property, **kwargs):
+#    # setting node instance runtime property
+#    ctx.instance.runtime_properties['some_property'] = some_property
 
 
 @operation
-def my_task(some_property, **kwargs):
-    # setting node instance runtime property
-    ctx.instance.runtime_properties['some_property'] = some_property
+def create_component(**kwargs):
+	print "!!!!!!!!!!!!!!!! calling create commponent for the instance with " + ctx.instance.id + " and the node" + ctx.node.name
+	pass
+
+
+@workflow
+def install_arcadia(**kwargs):
+	print "**************** install workflow is initialized"

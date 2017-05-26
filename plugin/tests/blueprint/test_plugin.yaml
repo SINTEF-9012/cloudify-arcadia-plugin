@@ -1,7 +1,7 @@
 plugins:
     # Name could be anything, this name is what appears on the beginning of operation
     # mappings.
-    plugin_name:
+    cloudify_arcadia_plugin:
         # Could be 'central_deployment_agent' or 'host_agent'.
         # If 'central_deployment_agent', this plugin will be executed on the
         # deployment dedicated agent, other wise it will be executed on the host agent.
@@ -18,25 +18,43 @@ plugins:
         #         the plugin if it is included in the the blueprint directory under the
         #         "plugins" directory. Not required in testing environments as the plugin
         #         need not be installed on any agent
+        package_name: cloudify-arcadia-plugin
+        package_version: '1.0.0.0'
 
 node_types:
-    cloudify.arcadia.nodes.Testnode:
-        derived_from: cloudify.nodes.Root
+    cloudify.arcadia.nodes.WrappedComponent:
+        derived_from: cloudify.nodes.SoftwareComponent
         properties:
             use_external_resource:
                 description: >
-                    Test property
+                    Set this to true if an arcadia component already exists
                 type: boolean
                 default: false
                 required: false
+            external_component_id:
+                description: >
+                    Specify id of the uploaded component in the ARCADIA framework.
+                    Has to be specified if use_external_resource is true
+                type: string
+                default: ""
+                required: false
+            component_jar_path:
+                description: >
+                    Local path to a jar component to upload to the ARCADIA framework.
+                    Has to be specified if use_external_resource is false
+                type: string
+                default: ""
+                required: false
             parameters:
                 description: >
-                    Some test parameters
+                    Some parameters
                 default: {}
                 required: false
         interfaces:
             cloudify.interfaces.lifecycle:
-                start:
-                    implementation: plugin_name.plugin.tasks.my_task
-                    inputs:
-                        some_property:
+                create:
+                    implementation: cloudify_arcadia_plugin.plugin.tasks.create_component
+
+workflows:
+    install_arcadia:
+        mapping: cloudify_arcadia_plugin.plugin.tasks.install_arcadia

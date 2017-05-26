@@ -22,12 +22,33 @@ from cloudify.test_utils import workflow_test
 
 class TestPlugin(unittest.TestCase):
 
+#    @workflow_test(path.join('blueprint', 'blueprint.yaml'),
+#                   resources_to_copy=[path.join('blueprint',
+#                                                'test_plugin.yaml')],
+#                   inputs={'test_input': 'new_test_input'})
+#    def test_my_task(self, cfy_local):
+#        # execute install workflow
+#        """#
+
+#        :param cfy_local:
+#        """
+#        cfy_local.execute('install', task_retries=0)#
+
+#        # extract single node instance
+#        instance = cfy_local.storage.get_node_instances()[0]#
+
+#        # assert runtime properties is properly set in node instance
+#        self.assertEqual(instance.runtime_properties['some_property'],
+#                         'new_test_input')#
+
+#        # assert deployment outputs are ok
+#        self.assertDictEqual(cfy_local.outputs(),
+#                             {'test_output': 'new_test_input'})#
+
     @workflow_test(path.join('blueprint', 'blueprint.yaml'),
                    resources_to_copy=[path.join('blueprint',
-                                                'test_plugin.yaml')],
-                   inputs={'test_input': 'new_test_input'})
-                   #)
-    def test_my_task(self, cfy_local):
+                                                'test_plugin.yaml')])
+    def test_create_component(self, cfy_local):
         # execute install workflow
         """
 
@@ -36,15 +57,14 @@ class TestPlugin(unittest.TestCase):
         cfy_local.execute('install', task_retries=0)
 
         # extract single node instance
+        print "!!!! test_create_component "
+        print cfy_local.storage.get_node_instances()
         instance = cfy_local.storage.get_node_instances()[0]
 
-        # assert runtime properties is properly set in node instance
-        self.assertEqual(instance.runtime_properties['some_property'],
-                         'new_test_input')
 
-        # assert deployment outputs are ok
-        self.assertDictEqual(cfy_local.outputs(),
-                             {'test_output': 'new_test_input'})
+    @workflow_test(path.join('blueprint', 'blueprint.yaml'),
+                   resources_to_copy=[path.join('blueprint',
+                                                'test_plugin.yaml')])
+    def test_install_arcadia_workflow(self, cfy_local):
 
-    def test_another_one(self):
-        print "test_another_one !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1"
+        cfy_local.execute('install_arcadia', task_retries=0)

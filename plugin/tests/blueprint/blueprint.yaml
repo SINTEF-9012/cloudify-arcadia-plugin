@@ -12,10 +12,30 @@ imports:
     - test_plugin.yaml
 
 inputs:
-    # example input that could be injected by test
-    test_input:
-        description: an input for the test
-        default: default_test_input
+#    # example input that could be injected by test
+#    test_input:
+#        description: an input for the test
+#        default: default_test_input
+
+    default_use_exernal_resource:
+        type: boolean
+        default: true
+
+    mysql_comp_jar_path:
+        type: string
+        default: "~/home/vassik/mysql_arcadia.jar"
+
+    wordpress_comp_jar_path:
+        type: string
+        default: "~/home/vassik/mysql_arcadia.jar"
+
+    mysql_arcadia_component:
+        type: string
+        default: "mysql_id_unique"
+
+    wordpress_arcadia_component:
+        type: string
+        default: "wordpress_id_unique"
 
 #node_templates:
 #    # defining a single node template that will serve as our test node
@@ -35,18 +55,23 @@ inputs:
 #                        # (or 'default_test_input' if no input was provided)
 #                        some_property: { get_input: test_input }
 
+#outputs:
+#    # example output the could be used to simplify assertions by test
+#    test_output:
+#        description: an output for the test
+#        value: { get_attribute: [test_node_template, some_property] }
 
 node_templates:
-    test_node_template:
-        type: cloudify.arcadia.nodes.Testnode
-        interfaces:
-            cloudify.interfaces.lifecycle:
-                start:
-                    inputs:
-                        some_property: { get_input: test_input }
+    wordpress:
+        type: cloudify.arcadia.nodes.WrappedComponent
+        properties:
+            use_external_resource: { get_input: default_use_exernal_resource }
+            component_jar_path: { get_input: wordpress_comp_jar_path }
+            external_component_id: { get_input: wordpress_arcadia_component}
 
-outputs:
-    # example output the could be used to simplify assertions by test
-    test_output:
-        description: an output for the test
-        value: { get_attribute: [test_node_template, some_property] }
+    mysql:
+        type: cloudify.arcadia.nodes.WrappedComponent
+        properties:
+            use_external_resource: { get_input: default_use_exernal_resource}
+            component_jar_path: { get_input: mysql_comp_jar_path}
+            external_component_id: { get_input: mysql_arcadia_component }
