@@ -61,6 +61,10 @@ inputs:
 #        description: an output for the test
 #        value: { get_attribute: [test_node_template, some_property] }
 
+relationships:
+    wordpress_connected_to_mysql:
+        derived_from: cloudify.arcadia.relationships.connected_to
+
 node_templates:
     mysql:
         type: cloudify.arcadia.nodes.WrappedComponent
@@ -76,5 +80,10 @@ node_templates:
             component_jar_path: { get_input: wordpress_comp_jar_path }
             external_component_id: { get_input: wordpress_arcadia_component}
         relationships:
-            - type: cloudify.arcadia.relationships.connected_to
+            - type: wordpress_connected_to_mysql
               target: mysql
+              source_interfaces:
+                cloudify.interfaces.relationship_lifecycle:
+                    preconfigure:
+                        inputs:
+                            args: {'args': 'value'}
