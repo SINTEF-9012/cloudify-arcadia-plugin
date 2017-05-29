@@ -62,16 +62,19 @@ inputs:
 #        value: { get_attribute: [test_node_template, some_property] }
 
 node_templates:
-    wordpress:
-        type: cloudify.arcadia.nodes.WrappedComponent
-        properties:
-            use_external_resource: { get_input: default_use_exernal_resource }
-            component_jar_path: { get_input: wordpress_comp_jar_path }
-            external_component_id: { get_input: wordpress_arcadia_component}
-
     mysql:
         type: cloudify.arcadia.nodes.WrappedComponent
         properties:
             use_external_resource: { get_input: default_use_exernal_resource}
             component_jar_path: { get_input: mysql_comp_jar_path}
             external_component_id: { get_input: mysql_arcadia_component }
+
+    wordpress:
+        type: cloudify.arcadia.nodes.WrappedComponent
+        properties:
+            use_external_resource: { get_input: default_use_exernal_resource }
+            component_jar_path: { get_input: wordpress_comp_jar_path }
+            external_component_id: { get_input: wordpress_arcadia_component}
+        relationships:
+            - type: cloudify.arcadia.relationships.connected_to
+              target: mysql

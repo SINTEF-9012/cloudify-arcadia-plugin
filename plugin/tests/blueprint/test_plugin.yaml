@@ -55,6 +55,21 @@ node_types:
                 create:
                     implementation: cloudify_arcadia_plugin.plugin.tasks.create_component
 
+
+relationships:
+    cloudify.arcadia.relationships.connected_to:
+        derived_from: cloudify.relationships.connected_to
+        source_interfaces:
+            cloudify.interfaces.relationship_lifecycle:
+                preconfigure:
+                    implementation: cloudify_arcadia_plugin.plugin.tasks.preconfigure_source
+                    inputs:
+                        args:
+                            default: {}
+
 workflows:
     install_arcadia:
         mapping: cloudify_arcadia_plugin.plugin.tasks.install_arcadia
+        parameters:
+            operations:
+                default: { 'create' : {} }

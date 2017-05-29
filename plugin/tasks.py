@@ -31,9 +31,15 @@ from cloudify.decorators import workflow
 @operation
 def create_component(**kwargs):
 	print "!!!!!!!!!!!!!!!! calling create commponent for the instance with " + ctx.instance.id + " and the node" + ctx.node.name
-	pass
 
 
 @workflow
-def install_arcadia(**kwargs):
+def install_arcadia(operations, **kwargs):
 	print "**************** install workflow is initialized"
+	print operations
+
+@operation
+def preconfigure_source(args=None, **kwargs):
+	print "*************** priconfigure_source"
+	print args
+	print kwargs
