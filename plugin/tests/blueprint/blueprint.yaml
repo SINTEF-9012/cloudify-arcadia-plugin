@@ -82,8 +82,3 @@ node_templates:
         relationships:
             - type: wordpress_connected_to_mysql
               target: mysql
-              source_interfaces:
-                cloudify.interfaces.relationship_lifecycle:
-                    preconfigure:
-                        inputs:
-                            args: {'args': 'value'}

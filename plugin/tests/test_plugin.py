@@ -45,26 +45,22 @@ class TestPlugin(unittest.TestCase):
 #        self.assertDictEqual(cfy_local.outputs(),
 #                             {'test_output': 'new_test_input'})#
 
-    @workflow_test(path.join('blueprint', 'blueprint.yaml'),
-                   resources_to_copy=[path.join('blueprint',
-                                                'test_plugin.yaml')])
-    def test_create_component(self, cfy_local):
-        # execute install workflow
-        """
-
-        :param cfy_local:
-        """
-        cfy_local.execute('install', task_retries=0)
-
-        # extract single node instance
-        print "!!!! test_create_component "
-        print cfy_local.storage.get_node_instances()
-        instance = cfy_local.storage.get_node_instances()[0]
+#    @workflow_test(path.join('blueprint', 'blueprint.yaml'),
+#                   resources_to_copy=[path.join('blueprint',
+#                                                'test_plugin.yaml')])
+#    def test_create_component(self, cfy_local):
+#        # execute install workflow
+#        """#
+#        :param cfy_local:
+#        """
+#        cfy_local.execute('install', task_retries=0)#
+#        # extract single node instance
+#        print "!!!! test_create_component"
+#        instance = cfy_local.storage.get_node_instances()[0]
 
 
     @workflow_test(path.join('blueprint', 'blueprint.yaml'),
                    resources_to_copy=[path.join('blueprint',
                                                 'test_plugin.yaml')])
     def test_install_arcadia_workflow(self, cfy_local):
-
         cfy_local.execute('install_arcadia', task_retries=0)
