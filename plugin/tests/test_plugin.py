@@ -88,5 +88,9 @@ class TestPlugin(unittest.TestCase):
         service_graph.add_component(wordpress)
 
         result = service_graph.print_element()
+        print result
+
+        print wordpress.print_element()
+        print dependency.print_element()
 
         self.assertEqual(result, expected_result)
