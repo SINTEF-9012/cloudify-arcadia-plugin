@@ -19,6 +19,12 @@ import unittest
 
 from cloudify.test_utils import workflow_test
 
+from plugin.srv_graph.graph_element import ServiceGraphElement
+from plugin.srv_graph.graph_element import ComponentElement
+from plugin.srv_graph.graph_element import ComponentDependencyElement
+
+from plugin.srv_graph.pretty_printer import DefaultPrettyPrinter
+
 
 class TestPlugin(unittest.TestCase):
 
@@ -59,8 +65,28 @@ class TestPlugin(unittest.TestCase):
 #        instance = cfy_local.storage.get_node_instances()[0]
 
 
-    @workflow_test(path.join('blueprint', 'blueprint.yaml'),
-                   resources_to_copy=[path.join('blueprint',
-                                                'test_plugin.yaml')])
-    def test_install_arcadia_workflow(self, cfy_local):
-        cfy_local.execute('install_arcadia', task_retries=0)
+#    @workflow_test(path.join('blueprint', 'blueprint.yaml'),
+#                   resources_to_copy=[path.join('blueprint',
+#                                                'test_plugin.yaml')])
+#    def test_install_arcadia_workflow(self, cfy_local):
+#        cfy_local.execute('install_arcadia', task_retries=0)
+
+
+    def test_pretty_print(self):
+        expected_result = 'something'
+        default_pretty_printer = DefaultPrettyPrinter()
+
+        service_graph = ServiceGraphElement(default_pretty_printer)
+        mysql = ComponentElement(default_pretty_printer)
+        wordpress = ComponentElement(default_pretty_printer)
+
+        dependency = ComponentDependencyElement(default_pretty_printer, mysql, wordpress)
+
+        wordpress.add_dependency(dependency)
+
+        service_graph.add_component(mysql)
+        service_graph.add_component(wordpress)
+
+        result = service_graph.print_element()
+
+        self.assertEqual(result, expected_result)
