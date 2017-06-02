@@ -76,11 +76,11 @@ class TestPlugin(unittest.TestCase):
         expected_result = 'something'
         default_pretty_printer = DefaultPrettyPrinter()
 
-        service_graph = ServiceGraphElement(default_pretty_printer)
-        mysql = ComponentElement(default_pretty_printer)
-        wordpress = ComponentElement(default_pretty_printer)
+        service_graph = ServiceGraphElement(default_pretty_printer, "service_graph")
+        mysql = ComponentElement(default_pretty_printer, "mysql")
+        wordpress = ComponentElement(default_pretty_printer, "wordpress")
 
-        dependency = ComponentDependencyElement(default_pretty_printer, mysql, wordpress)
+        dependency = ComponentDependencyElement(default_pretty_printer, mysql, wordpress, "wordpress_to_mysql_realationship")
 
         wordpress.add_dependency(dependency)
 

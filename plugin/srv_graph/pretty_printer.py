@@ -1,7 +1,8 @@
 from plugin.srv_graph.graph_element import *
+from plugin.srv_graph.abstract import ABCPrettyPrinter
 
 
-class DefaultPrettyPrinter(object):
+class DefaultPrettyPrinter(ABCPrettyPrinter):
 
 	def print_pretty(self, node):
 		result = ""
@@ -34,3 +35,4 @@ class DefaultPrettyPrinter(object):
 				str(dependency.source) + "->" + str(dependency.target) + "\n"
 		result += "  </graph_node_dependency>\n"
 		return result
+
