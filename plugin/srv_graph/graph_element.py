@@ -29,9 +29,9 @@ class ComponentDependencyElement(GraphElement):
 
 class ComponentElement(GraphElement):
 
-	def __init__(self, _pretty_printer=None, _depenedencies=None, _instance=None):
+	def __init__(self, _pretty_printer=None, _dependencies=None, _instance=None):
 		super(ComponentElement, self).__init__(_pretty_printer, _instance)
-		self.dependencies = _depenedencies if _depenedencies != None else []
+		self.dependencies = _dependencies if _dependencies != None else []
 
 	def add_dependency(self, component_dependency):
 		self.dependencies.append(component_dependency)
@@ -52,13 +52,13 @@ class ComponentFactory(object):
 	def __init__(self, _pretty_printer=None):
 		self._pretty_printer = _pretty_printer
 
-	def createComponent(self, _instance=None):
-		return ComponentElement(self._pretty_printer, _instance)
+	def create_component(self, _instance=None, _dependencies=None):
+		return ComponentElement(self._pretty_printer, _dependencies, _instance)
 
-	def createComponentDependency(self, _instance=None, _source=None, _target=None):
+	def create_component_dependency(self, _instance=None, _source=None, _target=None):
 		return ComponentDependencyElement(self._pretty_printer, _source, _target, _instance)
 
-	def createServiceGraph(self, _instance=None, _components=None):
+	def create_service_graph(self, _instance=None, _components=None):
 		return ServiceGraphElement(self,_pretty_printer, _components, _instance)
 
 
