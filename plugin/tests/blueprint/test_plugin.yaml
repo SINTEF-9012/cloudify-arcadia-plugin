@@ -22,6 +22,51 @@ plugins:
         package_version: '1.0.0.0'
 
 node_types:
+    cloudify.arcadia.nodes.ServiceGraph:
+        derived_from: cloudify.nodes.Root
+        properties:
+            use_external_resource:
+                description: >
+                    Set this to true if we an existing SeriveGraph
+                type: boolean
+                default: false
+                required: false
+            external_service_graph_id:
+                description: >
+                    Id of the external SeriveGraph in the ARCADIA framework.
+                    Has to be specified if use_external_resource is true
+                type: string
+                default: ""
+                required: false
+            service_graph_name:
+                description: >
+                    SG name
+                type: string
+                default: "Default_Service_Graph_Name"
+                required: false
+            service_graph_desc:
+                description: >
+                    SG description
+                type: string
+                default: "Default_Service_Graph_Description"
+                required: false
+
+    cloudify.arcadia.nodes.RuntimePolicy:
+        derived_from: cloudify.nodes.Root
+        properties:
+            use_external_resource:
+                type: boolean
+                default: true
+                required: false
+            external_runtime_policy_id:
+                type: string
+                default: "Default_Runtime_Policy_ID"
+                required: true
+            runtime_policy_name:
+                type: string
+                default: "Default_Runtime_Policy_Name"
+                required: false
+
     cloudify.arcadia.nodes.WrappedComponent:
         derived_from: cloudify.nodes.SoftwareComponent
         properties:
@@ -56,6 +101,9 @@ node_types:
                     implementation: cloudify_arcadia_plugin.plugin.tasks.create_component
 
 relationships:
+    cloudify.arcadia.relationships.contained_in:
+        derived_from: cloudify.relationships.contained_in
+
     cloudify.arcadia.relationships.connected_to:
         derived_from: cloudify.relationships.connected_to
         source_interfaces:

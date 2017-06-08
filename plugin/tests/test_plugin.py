@@ -74,11 +74,11 @@ class TestPlugin(unittest.TestCase):
 #        instance = cfy_local.storage.get_node_instances()[0]
 
 
-#    @workflow_test(path.join('blueprint', 'blueprint.yaml'),
-#                   resources_to_copy=[path.join('blueprint',
-#                                                'test_plugin.yaml')])
-#    def test_install_arcadia_workflow(self, cfy_local):
-#        cfy_local.execute('install_arcadia', task_retries=0)
+    @workflow_test(path.join('blueprint', 'blueprint.yaml'),
+                   resources_to_copy=[path.join('blueprint',
+                                                'test_plugin.yaml')])
+    def test_install_arcadia_workflow(self, cfy_local):
+        cfy_local.execute('install_arcadia', task_retries=0)
 
 
     def test_pretty_print(self):

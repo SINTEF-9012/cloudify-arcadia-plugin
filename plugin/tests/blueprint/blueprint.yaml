@@ -37,6 +37,26 @@ inputs:
         type: string
         default: "wordpress_id_unique"
 
+    sg_arcadia_id:
+        type: string
+        default: "wordpress_mysql_service_graph_id"
+
+    sg_arcadia_name:
+        type: string
+        default: "SimpleWordPressServiceGraph"
+
+    sg_arcadia_desc:
+        type: string
+        default: "SGDescription"
+
+    rp_arcadia_id:
+        type: string
+        default: "RPID"
+
+    rp_arcadia_name:
+        type: string
+        default: "RPName"
+
 #node_templates:
 #    # defining a single node template that will serve as our test node
 #    test_node_template:
@@ -66,12 +86,32 @@ relationships:
         derived_from: cloudify.arcadia.relationships.connected_to
 
 node_templates:
+    service_graph: 
+        type: cloudify.arcadia.nodes.ServiceGraph
+        properties:
+            use_external_resource: { get_input: default_use_exernal_resource }
+            external_service_graph_id: { get_input: sg_arcadia_id }
+            service_graph_name: { get_input: sg_arcadia_name }
+            service_graph_desc: { get_input: sg_arcadia_desc }
+
+    runtime_policy:
+        type: cloudify.arcadia.nodes.RuntimePolicy
+        properties:
+            external_runtime_policy_id: { get_input:  rp_arcadia_id }
+            runtime_policy_name: { get_input:  rp_arcadia_name }
+        relationships:
+            - type: cloudify.arcadia.relationships.contained_in
+              target: service_graph
+
     mysql:
         type: cloudify.arcadia.nodes.WrappedComponent
         properties:
-            use_external_resource: { get_input: default_use_exernal_resource}
-            component_jar_path: { get_input: mysql_comp_jar_path}
+            use_external_resource: { get_input: default_use_exernal_resource }
+            component_jar_path: { get_input: mysql_comp_jar_path }
             external_component_id: { get_input: mysql_arcadia_component }
+        relationships:
+            - type: cloudify.arcadia.relationships.contained_in
+              target: service_graph
 
     wordpress:
         type: cloudify.arcadia.nodes.WrappedComponent
@@ -82,3 +122,5 @@ node_templates:
         relationships:
             - type: wordpress_connected_to_mysql
               target: mysql
+            - type: cloudify.arcadia.relationships.contained_in
+              target: service_graph
