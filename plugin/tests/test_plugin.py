@@ -25,11 +25,13 @@ from plugin.srv_graph.graph_element import ComponentElement
 from plugin.srv_graph.graph_element import ComponentDependencyElement
 from plugin.srv_graph.graph_element import ComponentFactory
 from plugin.srv_graph.graph_element import ComponentFactoryFacade
+from plugin.srv_graph.graph_builder import GraphBuilder
 
 from plugin.srv_graph.pretty_printer import DefaultPrettyPrinter
 
 from plugin.tests.mocks.node import CloudifyWorlkflowNodeInstanceMock
 from plugin.tests.mocks.node import CloudifyWorkflowRelationshipInstanceMock
+
 
 
 def flatten_str(string):
@@ -158,7 +160,7 @@ class TestPlugin(unittest.TestCase):
 
         self.assertEqual(flatten_str(result), flatten_str(expected_rusult))
 
-    def test_graph_with_dependencies():
+    def test_graph_with_dependencies(self):
         expected_rusult = '''
             <GraphNode>
                 <NID>graph_node_wordpress_id</NID>
@@ -185,7 +187,7 @@ class TestPlugin(unittest.TestCase):
                                                             mock_relationship={'nid': 'NID'})
 
         pretty_printer = DefaultPrettyPrinter()
-        ComponentFactoryFacade.set_factory(pretty_printer)
+        ComponentFactoryFacade.set_factory(ComponentFactory(pretty_printer))
 
         wp_cmp = ComponentFactoryFacade.INSTANCE.create_component(mock_wordpress)
         mysql_dep = ComponentFactoryFacade.INSTANCE.create_component_dependency(mock_relationship)
@@ -195,7 +197,7 @@ class TestPlugin(unittest.TestCase):
 
         self.assertEqual(flatten_str(result), flatten_str(expected_rusult))
 
-    def test_complete_service_graph():
+    def test_complete_service_graph(self):
         expected_rusult = '''
             <?xml version="1.0" encoding="UTF-8"?>
             <ServiceGraph xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ArcadiaModellingArtefacts.xsd">
@@ -228,34 +230,83 @@ class TestPlugin(unittest.TestCase):
             </ServiceGraph>       
         '''
 
-        mock_wordpress = CloudifyWorlkflowNodeInstanceMock()
-        mock_wordpress._node_instance.runtime_properties['nid'] = 'graph_node_wordpress_id'
-        mock_wordpress._node_instance.runtime_properties['cnid'] = 'wordpress_id'
+        sg_mock = CloudifyWorlkflowNodeInstanceMock()
+        mysql_mock = CloudifyWorlkflowNodeInstanceMock()
+        mysql_mock._node_instance.runtime_properties['nid'] = 'graph_node_mysql_id'
+        mysql_mock._node_instance.runtime_properties['cnid'] = 'mysql_id'
+        mysql_mock._node_instance.runtime_properties['cepcid'] = 'mysqltcp_cepcid'
+        mysql_mock._node_instance.runtime_properties['ecepid'] = 'mysqltcp'
 
-        mock_msql = CloudifyWorlkflowNodeInstanceMock()
-        mock_msql._node_instance.runtime_properties['nid'] = 'graph_node_mysql_id'
-        mock_msql._node_instance.runtime_properties['cnid'] = 'mysql_id'
-        mock_msql._node_instance.runtime_properties['cepcid'] = 'mysqltcp_cepcid'
-        mock_msql._node_instance.runtime_properties['ecepid'] = 'mysqltcp'
+        wp_mock = CloudifyWorlkflowNodeInstanceMock()
+        wp_mock._node_instance.runtime_properties['nid'] = 'graph_node_wordpress_id'
+        wp_mock._node_instance.runtime_properties['cnid'] = 'wordpress_id'
 
-        mock_relationship = CloudifyWorkflowRelationshipInstanceMock(node_instance=mock_msql, 
-                                                            mock_relationship={'nid': 'NID'})
+        rp_mock = CloudifyWorlkflowNodeInstanceMock()
+        rp_mock._node_instance.runtime_properties['rpid'] = 'RPID'
+        rp_mock._node_instance.runtime_properties['rpname'] = 'RPName'
 
+        sg_mock._contained_instances.append(wp_mock)
+        sg_mock._contained_instances.append(mysql_mock)
+        sg_mock._contained_instances.append(rp_mock)
 
-        mock_runtime = CloudifyWorlkflowNodeInstanceMock()
-        mock_runtime._node_instance.runtime_properties['rpid'] = 'RPID'
-        mock_runtime._node_instance.runtime_properties['rpname'] = 'RPName'
+        sg_mock._node_instance['id'] = 'service_graph_gm17g6'
+        mysql_mock._node_instance['id'] = 'mysql_x1m8sh'
+        wp_mock._node_instance['id'] = 'wordpress_k8lr3c'
+        rp_mock._node_instance['id'] = 'runtime_policy_7vy2nn'
 
-        pretty_printer = DefaultPrettyPrinter()
-        ComponentFactoryFacade.set_factory(pretty_printer)
+        mysql_mock._relationship_instances['service_graph_gm17g6'] = CloudifyWorkflowRelationshipInstanceMock(node_instance=sg_mock)
+        wp_mock._relationship_instances['service_graph_gm17g6'] = CloudifyWorkflowRelationshipInstanceMock(node_instance=sg_mock)
+        wp_mock._relationship_instances['mysql_x1m8sh'] = CloudifyWorkflowRelationshipInstanceMock(node_instance=mysql_mock, 
+                                                                                            mock_relationship={'nid': 'NID'})
+        rp_mock._relationship_instances['service_graph_gm17g6'] = CloudifyWorkflowRelationshipInstanceMock(node_instance=sg_mock)
 
-        wp_cmp = ComponentFactoryFacade.INSTANCE.create_component(mock_wordpress)
-        mysql_dep = ComponentFactoryFacade.INSTANCE.create_component_dependency(mock_relationship)
-        wp_cmp.add_dependency(mysql_dep)
-
-
-        service_graph = ComponentFactoryFacade.INSTANCE.create_service_graph()
+        graph_builder = GraphBuilder(_comp_factory = ComponentFactory(DefaultPrettyPrinter()))
+        service_graph = graph_builder.build(sg_mock)
 
         restult = service_graph.print_element()
 
         self.assertEqual(flatten_str(result), flatten_str(expected_rusult))
+
+
+    def test_service_graph_builder(self):
+        sg_mock = CloudifyWorlkflowNodeInstanceMock()
+        mysql_mock = CloudifyWorlkflowNodeInstanceMock()
+        wp_mock = CloudifyWorlkflowNodeInstanceMock()
+        rp_mock = CloudifyWorlkflowNodeInstanceMock()
+
+        sg_mock._contained_instances.append(wp_mock)
+        sg_mock._contained_instances.append(mysql_mock)
+        sg_mock._contained_instances.append(rp_mock)
+
+        sg_mock._node_instance['id'] = 'service_graph_gm17g6'
+        mysql_mock._node_instance['id'] = 'mysql_x1m8sh'
+        wp_mock._node_instance['id'] = 'wordpress_k8lr3c'
+        rp_mock._node_instance['id'] = 'runtime_policy_7vy2nn'
+
+        mysql_mock._relationship_instances['service_graph_gm17g6'] = CloudifyWorkflowRelationshipInstanceMock(node_instance=sg_mock)
+        wp_mock._relationship_instances['service_graph_gm17g6'] = CloudifyWorkflowRelationshipInstanceMock(node_instance=sg_mock)
+        wp_mock._relationship_instances['mysql_x1m8sh'] = CloudifyWorkflowRelationshipInstanceMock(node_instance=mysql_mock)
+        rp_mock._relationship_instances['service_graph_gm17g6'] = CloudifyWorkflowRelationshipInstanceMock(node_instance=sg_mock)
+
+        graph_builder = GraphBuilder(_comp_factory = ComponentFactory(DefaultPrettyPrinter()))
+        service_graph = graph_builder.build(sg_mock)
+
+        self.assertTrue(isinstance(service_graph, ServiceGraphElement))
+        self.assertTrue(len(service_graph.components) == 2)
+        self.assertTrue(len(service_graph.policies) == 1)
+
+
+        def find_component(self, array, component):
+            for comp in array:
+                if comp._instance == component:
+                    return comp
+            return
+
+        mysql_comp = find_component(service_graph.components, mysql_mock)
+        wp_comp = find_component(service_graph.components, wp_comp)
+        self.assertTrue(mysql_comp)
+        self.assertTrue(wp_comp)
+
+        self.assertTrue(len(wp_comp.dependencies) == 1)
+
+        self.assertTure(wp_comp.dependencies[0].target._instance == mysql_mock)

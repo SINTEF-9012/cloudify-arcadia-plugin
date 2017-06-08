@@ -60,6 +60,8 @@ def install_arcadia(operations, **kwargs):
 	for node in wctx.nodes:
 		sequence = graph.sequence()
 		for instance in node.instances:
+			print "!!!!! instance"
+			print instance.__dict__
 			for relationship in instance.relationships:
 				relationship._relationship_instance['hdelj'] = 'sdfsfd'
 				sequence.add(relationship.execute_source_operation('preconfigure', kwargs=None))
