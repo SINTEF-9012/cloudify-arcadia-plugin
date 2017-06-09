@@ -45,7 +45,7 @@ def install_arcadia(operations, **kwargs):
 	send_event_done_tasks = {}
 	for node in wctx.nodes:
 		for instance in node.instances:
-			instance._node_instance['runtime_properties']['sometheing'] = "hello"
+			#instance._node_instance['runtime_properties']['sometheing'] = "hello"
 			send_event_starting_tasks[instance.id] = instance.send_event('Starting to run operation')
 			send_event_done_tasks[instance.id] = instance.send_event('Done running operation')
 
@@ -60,10 +60,13 @@ def install_arcadia(operations, **kwargs):
 	for node in wctx.nodes:
 		sequence = graph.sequence()
 		for instance in node.instances:
-			print "!!!!! instance"
-			print instance.__dict__
+			#print "!!!!! instance"
+			#print instance.__dict__
 			for relationship in instance.relationships:
-				relationship._relationship_instance['hdelj'] = 'sdfsfd'
+				#print "!!!!!!!!!!!!!!!!!!!!!!"
+				#print relationship.__dict__
+				#print relationship._relationship.__dict__
+				#relationship._relationship_instance['hdelj'] = 'sdfsfd'
 				sequence.add(relationship.execute_source_operation('preconfigure', kwargs=None))
 
 	for node in wctx.nodes:

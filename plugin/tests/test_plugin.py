@@ -295,7 +295,6 @@ class TestPlugin(unittest.TestCase):
         self.assertTrue(len(service_graph.components) == 2)
         self.assertTrue(len(service_graph.policies) == 1)
 
-
         def find_component(self, array, component):
             for comp in array:
                 if comp._instance == component:
@@ -304,9 +303,8 @@ class TestPlugin(unittest.TestCase):
 
         mysql_comp = find_component(service_graph.components, mysql_mock)
         wp_comp = find_component(service_graph.components, wp_comp)
+
         self.assertTrue(mysql_comp)
         self.assertTrue(wp_comp)
-
         self.assertTrue(len(wp_comp.dependencies) == 1)
-
         self.assertTure(wp_comp.dependencies[0].target._instance == mysql_mock)
