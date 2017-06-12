@@ -29,8 +29,8 @@ from plugin.srv_graph.graph_builder import GraphBuilder
 
 from plugin.srv_graph.pretty_printer import DefaultPrettyPrinter
 
-from plugin.tests.mocks.node import CloudifyWorlkflowNodeInstanceMock
-from plugin.tests.mocks.node import CloudifyWorkflowRelationshipInstanceMock
+from plugin.tests.mocks.nodes import CloudifyWorlkflowNodeInstanceMock
+from plugin.tests.mocks.nodes import CloudifyWorkflowRelationshipInstanceMock
 
 
 
@@ -193,7 +193,7 @@ class TestPlugin(unittest.TestCase):
         mysql_dep = ComponentFactoryFacade.INSTANCE.create_component_dependency(mock_relationship)
         wp_cmp.add_dependency(mysql_dep)
 
-        restult = wp_cmp.print_element()
+        result = wp_cmp.print_element()
 
         self.assertEqual(flatten_str(result), flatten_str(expected_rusult))
 
@@ -230,18 +230,22 @@ class TestPlugin(unittest.TestCase):
             </ServiceGraph>       
         '''
 
-        sg_mock = CloudifyWorlkflowNodeInstanceMock()
-        mysql_mock = CloudifyWorlkflowNodeInstanceMock()
+        srv_graph_type = ['cloudify.nodes.Root', 'cloudify.arcadia.nodes.ServiceGraph']
+        runtime_type = ['cloudify.nodes.Root', 'cloudify.arcadia.nodes.RuntimePolicy']
+        wrap_comp_type = ['cloudify.nodes.Root', 'cloudify.nodes.SoftwareComponent', 'cloudify.arcadia.nodes.WrappedComponent']
+
+        sg_mock = CloudifyWorlkflowNodeInstanceMock(type_hierarchy = srv_graph_type)
+        mysql_mock = CloudifyWorlkflowNodeInstanceMock(type_hierarchy = wrap_comp_type)
         mysql_mock._node_instance.runtime_properties['nid'] = 'graph_node_mysql_id'
         mysql_mock._node_instance.runtime_properties['cnid'] = 'mysql_id'
         mysql_mock._node_instance.runtime_properties['cepcid'] = 'mysqltcp_cepcid'
         mysql_mock._node_instance.runtime_properties['ecepid'] = 'mysqltcp'
 
-        wp_mock = CloudifyWorlkflowNodeInstanceMock()
+        wp_mock = CloudifyWorlkflowNodeInstanceMock(type_hierarchy = wrap_comp_type)
         wp_mock._node_instance.runtime_properties['nid'] = 'graph_node_wordpress_id'
         wp_mock._node_instance.runtime_properties['cnid'] = 'wordpress_id'
 
-        rp_mock = CloudifyWorlkflowNodeInstanceMock()
+        rp_mock = CloudifyWorlkflowNodeInstanceMock(type_hierarchy = runtime_type)
         rp_mock._node_instance.runtime_properties['rpid'] = 'RPID'
         rp_mock._node_instance.runtime_properties['rpname'] = 'RPName'
 
@@ -254,25 +258,32 @@ class TestPlugin(unittest.TestCase):
         wp_mock._node_instance['id'] = 'wordpress_k8lr3c'
         rp_mock._node_instance['id'] = 'runtime_policy_7vy2nn'
 
-        mysql_mock._relationship_instances['service_graph_gm17g6'] = CloudifyWorkflowRelationshipInstanceMock(node_instance=sg_mock)
-        wp_mock._relationship_instances['service_graph_gm17g6'] = CloudifyWorkflowRelationshipInstanceMock(node_instance=sg_mock)
+        con_to_type = ['cloudify.relationships.depends_on', 'cloudify.relationships.connected_to', 'cloudify.arcadia.relationships.connected_to', 'wordpress_connected_to_mysql']
+        con_in_type = ['cloudify.relationships.contained_in', 'cloudify.arcadia.relationships.contained_in']
+
+        mysql_mock._relationship_instances['service_graph_gm17g6'] = CloudifyWorkflowRelationshipInstanceMock(node_instance=sg_mock, type_hierarchy=con_in_type)
+        wp_mock._relationship_instances['service_graph_gm17g6'] = CloudifyWorkflowRelationshipInstanceMock(node_instance=sg_mock, type_hierarchy=con_in_type)
         wp_mock._relationship_instances['mysql_x1m8sh'] = CloudifyWorkflowRelationshipInstanceMock(node_instance=mysql_mock, 
-                                                                                            mock_relationship={'nid': 'NID'})
-        rp_mock._relationship_instances['service_graph_gm17g6'] = CloudifyWorkflowRelationshipInstanceMock(node_instance=sg_mock)
+                                                                                            mock_relationship={'nid': 'NID'},
+                                                                                            type_hierarchy=con_to_type)
+        rp_mock._relationship_instances['service_graph_gm17g6'] = CloudifyWorkflowRelationshipInstanceMock(node_instance=sg_mock, type_hierarchy=con_in_type)
 
         graph_builder = GraphBuilder(_comp_factory = ComponentFactory(DefaultPrettyPrinter()))
         service_graph = graph_builder.build(sg_mock)
 
-        restult = service_graph.print_element()
+        result = service_graph.print_element()
 
         self.assertEqual(flatten_str(result), flatten_str(expected_rusult))
 
 
     def test_service_graph_builder(self):
-        sg_mock = CloudifyWorlkflowNodeInstanceMock()
-        mysql_mock = CloudifyWorlkflowNodeInstanceMock()
-        wp_mock = CloudifyWorlkflowNodeInstanceMock()
-        rp_mock = CloudifyWorlkflowNodeInstanceMock()
+        srv_graph_type = ['cloudify.nodes.Root', 'cloudify.arcadia.nodes.ServiceGraph']
+        runtime_type = ['cloudify.nodes.Root', 'cloudify.arcadia.nodes.RuntimePolicy']
+        wrap_comp_type = ['cloudify.nodes.Root', 'cloudify.nodes.SoftwareComponent', 'cloudify.arcadia.nodes.WrappedComponent']
+        sg_mock = CloudifyWorlkflowNodeInstanceMock(type_hierarchy = srv_graph_type)
+        mysql_mock = CloudifyWorlkflowNodeInstanceMock(type_hierarchy = wrap_comp_type)
+        wp_mock = CloudifyWorlkflowNodeInstanceMock(type_hierarchy = wrap_comp_type)
+        rp_mock = CloudifyWorlkflowNodeInstanceMock(type_hierarchy = runtime_type)
 
         sg_mock._contained_instances.append(wp_mock)
         sg_mock._contained_instances.append(mysql_mock)
@@ -283,10 +294,13 @@ class TestPlugin(unittest.TestCase):
         wp_mock._node_instance['id'] = 'wordpress_k8lr3c'
         rp_mock._node_instance['id'] = 'runtime_policy_7vy2nn'
 
-        mysql_mock._relationship_instances['service_graph_gm17g6'] = CloudifyWorkflowRelationshipInstanceMock(node_instance=sg_mock)
-        wp_mock._relationship_instances['service_graph_gm17g6'] = CloudifyWorkflowRelationshipInstanceMock(node_instance=sg_mock)
-        wp_mock._relationship_instances['mysql_x1m8sh'] = CloudifyWorkflowRelationshipInstanceMock(node_instance=mysql_mock)
-        rp_mock._relationship_instances['service_graph_gm17g6'] = CloudifyWorkflowRelationshipInstanceMock(node_instance=sg_mock)
+        con_to_type = ['cloudify.relationships.depends_on', 'cloudify.relationships.connected_to', 'cloudify.arcadia.relationships.connected_to', 'wordpress_connected_to_mysql']
+        con_in_type = ['cloudify.relationships.contained_in', 'cloudify.arcadia.relationships.contained_in']
+
+        mysql_mock._relationship_instances['service_graph_gm17g6'] = CloudifyWorkflowRelationshipInstanceMock(node_instance=sg_mock, type_hierarchy=con_in_type)
+        wp_mock._relationship_instances['service_graph_gm17g6'] = CloudifyWorkflowRelationshipInstanceMock(node_instance=sg_mock, type_hierarchy=con_in_type)
+        wp_mock._relationship_instances['mysql_x1m8sh'] = CloudifyWorkflowRelationshipInstanceMock(node_instance=mysql_mock, type_hierarchy=con_to_type)
+        rp_mock._relationship_instances['service_graph_gm17g6'] = CloudifyWorkflowRelationshipInstanceMock(node_instance=sg_mock, type_hierarchy=con_in_type)
 
         graph_builder = GraphBuilder(_comp_factory = ComponentFactory(DefaultPrettyPrinter()))
         service_graph = graph_builder.build(sg_mock)
@@ -295,16 +309,16 @@ class TestPlugin(unittest.TestCase):
         self.assertTrue(len(service_graph.components) == 2)
         self.assertTrue(len(service_graph.policies) == 1)
 
-        def find_component(self, array, component):
+        def find_component(array, component):
             for comp in array:
                 if comp._instance == component:
                     return comp
             return
 
         mysql_comp = find_component(service_graph.components, mysql_mock)
-        wp_comp = find_component(service_graph.components, wp_comp)
+        wp_comp = find_component(service_graph.components, wp_mock)
 
         self.assertTrue(mysql_comp)
         self.assertTrue(wp_comp)
         self.assertTrue(len(wp_comp.dependencies) == 1)
-        self.assertTure(wp_comp.dependencies[0].target._instance == mysql_mock)
+        self.assertTrue(wp_comp.dependencies[0].target._instance == mysql_mock)

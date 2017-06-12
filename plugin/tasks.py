@@ -62,9 +62,12 @@ def install_arcadia(operations, **kwargs):
 		for instance in node.instances:
 			#print "!!!!! instance"
 			#print instance.__dict__
+			#print instance._node
+			#print instance._node.__dict__
 			for relationship in instance.relationships:
-				#print "!!!!!!!!!!!!!!!!!!!!!!"
+				#print "!!!!!!!!!!!!!!!!!!!!!! relationship.__dict__"
 				#print relationship.__dict__
+				#print "relationship._relationship.__dict__"
 				#print relationship._relationship.__dict__
 				#relationship._relationship_instance['hdelj'] = 'sdfsfd'
 				sequence.add(relationship.execute_source_operation('preconfigure', kwargs=None))
