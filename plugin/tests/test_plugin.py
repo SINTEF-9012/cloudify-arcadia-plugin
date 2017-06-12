@@ -28,6 +28,7 @@ from plugin.srv_graph.graph_element import ComponentFactoryFacade
 from plugin.srv_graph.graph_builder import GraphBuilder
 
 from plugin.srv_graph.pretty_printer import DefaultPrettyPrinter
+from plugin.srv_graph.pretty_printer import ARCADIAPrettyPrinter
 
 from plugin.tests.mocks.nodes import CloudifyWorlkflowNodeInstanceMock
 from plugin.tests.mocks.nodes import CloudifyWorkflowRelationshipInstanceMock
@@ -114,6 +115,7 @@ class TestPlugin(unittest.TestCase):
         result = service_graph.print_element()
         self.assertEqual(flatten_str(result), flatten_str(expected_result))
 
+
     def test_graph_node_print(self):
 
         expected_rusult = '''
@@ -126,13 +128,14 @@ class TestPlugin(unittest.TestCase):
         mock_instance._node_instance.runtime_properties['nid'] = 'graph_node_mysql_id'
         mock_instance._node_instance.runtime_properties['cnid'] = 'mysql_id'
 
-        pretty_printer = DefaultPrettyPrinter()
+        pretty_printer = ARCADIAPrettyPrinter()
         ComponentFactoryFacade.set_factory(ComponentFactory(pretty_printer))
         mysql = ComponentFactoryFacade.INSTANCE.create_component(mock_instance)
 
         result = mysql.print_element()
 
         self.assertEqual(flatten_str(result), flatten_str(expected_rusult))
+
 
     def test_graph_node_dependency_print(self):
         expected_rusult = '''
@@ -152,13 +155,14 @@ class TestPlugin(unittest.TestCase):
         mock_relationship = CloudifyWorkflowRelationshipInstanceMock(node_instance=mock_instance, 
                                                             mock_relationship={'nid': 'NID'})
 
-        pretty_printer = DefaultPrettyPrinter()
+        pretty_printer = ARCADIAPrettyPrinter()
         ComponentFactoryFacade.set_factory(ComponentFactory(pretty_printer))
         mysql_dependency = ComponentFactoryFacade.INSTANCE.create_component_dependency(mock_relationship)
 
         result = mysql_dependency.print_element()
 
         self.assertEqual(flatten_str(result), flatten_str(expected_rusult))
+
 
     def test_graph_with_dependencies(self):
         expected_rusult = '''
@@ -186,7 +190,7 @@ class TestPlugin(unittest.TestCase):
         mock_relationship = CloudifyWorkflowRelationshipInstanceMock(node_instance=mock_msql, 
                                                             mock_relationship={'nid': 'NID'})
 
-        pretty_printer = DefaultPrettyPrinter()
+        pretty_printer = ARCADIAPrettyPrinter()
         ComponentFactoryFacade.set_factory(ComponentFactory(pretty_printer))
 
         wp_cmp = ComponentFactoryFacade.INSTANCE.create_component(mock_wordpress)
@@ -196,6 +200,7 @@ class TestPlugin(unittest.TestCase):
         result = wp_cmp.print_element()
 
         self.assertEqual(flatten_str(result), flatten_str(expected_rusult))
+
 
     def test_complete_service_graph(self):
         expected_rusult = '''
@@ -268,7 +273,7 @@ class TestPlugin(unittest.TestCase):
                                                                                             type_hierarchy=con_to_type)
         rp_mock._relationship_instances['service_graph_gm17g6'] = CloudifyWorkflowRelationshipInstanceMock(node_instance=sg_mock, type_hierarchy=con_in_type)
 
-        graph_builder = GraphBuilder(_comp_factory = ComponentFactory(DefaultPrettyPrinter()))
+        graph_builder = GraphBuilder(_comp_factory = ComponentFactory(ARCADIAPrettyPrinter()))
         service_graph = graph_builder.build(sg_mock)
 
         result = service_graph.print_element()
@@ -302,7 +307,7 @@ class TestPlugin(unittest.TestCase):
         wp_mock._relationship_instances['mysql_x1m8sh'] = CloudifyWorkflowRelationshipInstanceMock(node_instance=mysql_mock, type_hierarchy=con_to_type)
         rp_mock._relationship_instances['service_graph_gm17g6'] = CloudifyWorkflowRelationshipInstanceMock(node_instance=sg_mock, type_hierarchy=con_in_type)
 
-        graph_builder = GraphBuilder(_comp_factory = ComponentFactory(DefaultPrettyPrinter()))
+        graph_builder = GraphBuilder(_comp_factory = ComponentFactory(ARCADIAPrettyPrinter()))
         service_graph = graph_builder.build(sg_mock)
 
         self.assertTrue(isinstance(service_graph, ServiceGraphElement))
