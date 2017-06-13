@@ -21,8 +21,6 @@ class GraphBuilder(object):
 				#source_id, target_id, relationship_instance
 				relationships.append((instance._node_instance['id'], key, value))
 
-			#print instance
-			#print instance.__dict__
 			if self.wrap_comp_type in instance._node.type_hierarchy:
 				component = ComponentFactoryFacade.INSTANCE.create_component(_instance=instance)
 				dic_elem[instance._node_instance['id']] = component
@@ -34,9 +32,6 @@ class GraphBuilder(object):
 
 		for relationship in relationships:
 			source_id, target_id, rel_obj = relationship[0], relationship[1], relationship[2]
-			#print "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!relationship"
-			#print rel_obj
-			#print rel_obj.__dict__
 			if self.conto_rel_type in rel_obj._relationship.type_hierarchy:
 				dep_comp = ComponentFactoryFacade.INSTANCE.create_component_dependency(
 					_instance=rel_obj, _source=dic_elem[source_id], _target=dic_elem[target_id])

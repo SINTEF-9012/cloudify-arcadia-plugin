@@ -101,7 +101,7 @@ class ARCADIAPrettyPrinter(ABCPrettyPrinter):
 
 	def _print_dependency(self, dependency):
 		_instance = dependency.get_instance()
-		runtime_prop = _instance._relationship_instance['runtime_properties'] 
+		runtime_prop = _instance._relationship_instance['runtime_properties']
 		_instance_target = dependency.target.get_instance()
 		_node_instance_target = _instance_target._node_instance
 
