@@ -1,4 +1,5 @@
 from plugin.srv_graph.abstract.abc_graph_elements import ABCGraphElement
+from plugin.utils.klasses import Singleton
 
 class GraphElement(ABCGraphElement):
 
@@ -75,15 +76,6 @@ class ComponentFactory(object):
 		return RuntimePolicyElement(self._pretty_printer, _instance)
 
 
-class Singleton(type):
-
-	_instances = {}
-
-	def __call__(cls, *args, **kwargs):
-		if cls not in cls._instances:
-			cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
-
-		return cls._instances[cls]
 
 #component_factory = ComponentFactory()
 #ComponentFactoryFacade.setFactory(component_factory)
@@ -101,3 +93,4 @@ class ComponentFactoryFacade(object):
 	@classmethod
 	def set_factory(cls, _factory):
 		cls.INSTANCE = _factory
+

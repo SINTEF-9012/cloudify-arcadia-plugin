@@ -22,6 +22,13 @@ from cloudify.workflows import ctx as wctx
 from cloudify.decorators import operation
 from cloudify.decorators import workflow
 
+from plugin.srv_graph.graph_element import ComponentFactoryFacade
+from plugin.context import actx
+from plugin.api.component import ARCADIAComponentAPI
+from plugin.api.relationship import ARCADIARelationshipAPI
+from plugin.api.service_graph import ARCADIAServiceGraphAPI
+
+
 
 #@operation
 #def my_task(some_property, **kwargs):
@@ -32,10 +39,16 @@ from cloudify.decorators import workflow
 @operation
 def create_component(**kwargs):
 	print "!!!!!!!!!!!!!!!! calling create commponent for the instance with " + ctx.instance.id + " and the node" + ctx.node.name
+	api = ARCADIAComponentAPI(test_mode=kwargs.get('test_mode'))
+	api.create_component(_instance=actx.components[kwargs.get('id')])
+
 
 @operation
 def preconfigure_source(**kwargs):
 	print "**************** priconfigure_source"
+	api = ARCADIARelationshipAPI(test_mode=kwargs.get('test_mode'))
+	api.preconfig_src_relationship(_instance=actx.relationships[kwargs.get('id')])
+
 
 @workflow
 def install_arcadia(operations, **kwargs):
@@ -45,32 +58,29 @@ def install_arcadia(operations, **kwargs):
 	send_event_done_tasks = {}
 	for node in wctx.nodes:
 		for instance in node.instances:
-			#instance._node_instance['runtime_properties']['sometheing'] = "hello"
 			send_event_starting_tasks[instance.id] = instance.send_event('Starting to run operation')
 			send_event_done_tasks[instance.id] = instance.send_event('Done running operation')
 
 	for node in wctx.nodes:
 		for instance in node.instances:
 			sequence = graph.sequence()
+			inst_kwargs = dict() 
+			inst_kwargs['id'] = actx.test_component(instance)
+			inst_kwargs['test_mode'] = kwargs.get('test_mode')
 			sequence.add(
 				send_event_starting_tasks[instance.id],
-				instance.execute_operation("create", kwargs=None),
+				instance.execute_operation("create", kwargs=inst_kwargs),
 				send_event_done_tasks[instance.id])
 
 	for node in wctx.nodes:
 		sequence = graph.sequence()
 		for instance in node.instances:
-			#print "!!!!! instance"
-			#print instance.__dict__
-			#print instance._node
-			#print instance._node.__dict__
 			for relationship in instance.relationships:
-				#print "!!!!!!!!!!!!!!!!!!!!!! relationship.__dict__"
-				#print relationship.__dict__
-				#print "relationship._relationship.__dict__"
-				#print relationship._relationship.__dict__
-				#relationship._relationship_instance['hdelj'] = 'sdfsfd'
-				sequence.add(relationship.execute_source_operation('preconfigure', kwargs=None))
+				rel_kwargs = dict()
+				rel_kwargs['id'] = actx.test_relationship(relationship)
+				rel_kwargs['test_mode'] = kwargs.get('test_mode')
+				sequence.add(
+					relationship.execute_source_operation('preconfigure', kwargs=rel_kwargs))
 
 	for node in wctx.nodes:
 		for instance in node.instances:
@@ -81,7 +91,7 @@ def install_arcadia(operations, **kwargs):
 					graph.add_dependency(instance_starting_task, target_done_task)
 
 	graph.execute()
-	create_arcadia_service_graph()
 
-def create_arcadia_service_graph():
-	print "creating service grapth"
+	api = ARCADIAServiceGraphAPI(test_mode=kwargs.get('test_mode'))
+	service_graph_tree = api.generate_service_graph(actx.service_graph)
+	api.install_service_graph(service_graph_tree)

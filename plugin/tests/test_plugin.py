@@ -33,6 +33,8 @@ from plugin.srv_graph.pretty_printer import ARCADIAPrettyPrinter
 from plugin.tests.mocks.nodes import CloudifyWorlkflowNodeInstanceMock
 from plugin.tests.mocks.nodes import CloudifyWorkflowRelationshipInstanceMock
 
+from plugin.context import actx
+
 
 
 def flatten_str(string):
@@ -77,11 +79,54 @@ class TestPlugin(unittest.TestCase):
 #        instance = cfy_local.storage.get_node_instances()[0]
 
 
-#    @workflow_test(path.join('blueprint', 'blueprint.yaml'),
-#                   resources_to_copy=[path.join('blueprint',
-#                                                'test_plugin.yaml')])
-#    def test_install_arcadia_workflow(self, cfy_local):
-#        cfy_local.execute('install_arcadia', task_retries=0)
+    @workflow_test(path.join('blueprint', 'blueprint.yaml'),
+                   resources_to_copy=[path.join('blueprint',
+                                                'test_plugin.yaml')])
+    def test_install_arcadia_workflow(self, cfy_local):
+        expected_rusult = '''
+            <?xml version="1.0" encoding="UTF-8"?>
+            <ServiceGraph xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ArcadiaModellingArtefacts.xsd">
+              <DescriptiveSGMetadata>
+                <SGID>wordpress_mysql_service_graph_id</SGID>
+                <SGName>SimpleWordPressServiceGraph</SGName>
+                <SGDescription>SGDescription</SGDescription>
+              </DescriptiveSGMetadata>
+              <GraphNodeDescriptor>
+                <GraphNode>
+                  <NID>graph_node_mysql_id</NID>
+                  <CNID>mysql_id</CNID>
+                </GraphNode>
+                <GraphNode>
+                    <NID>graph_node_wordpress_id</NID>
+                    <CNID>wordpress_id</CNID>
+                    <GraphDependency>
+                        <CEPCID>mysqltcp_cepcid</CEPCID>
+                        <ECEPID>mysqltcp</ECEPID>
+                        <NID>NID</NID>
+                    </GraphDependency>
+                </GraphNode>
+              </GraphNodeDescriptor>
+              <RuntimePolicyDescriptor>
+                <RuntimePolicy>
+                  <RPID>RPID</RPID>
+                  <RPName>RPName</RPName>
+                </RuntimePolicy>
+              </RuntimePolicyDescriptor>
+            </ServiceGraph>       
+        '''
+
+        cfy_local.execute('install_arcadia', 
+            task_retries=0,
+            parameters={ 'test_mode' : True }, 
+            allow_custom_parameters=True)
+
+        factory = ComponentFactory(ARCADIAPrettyPrinter())
+        graph_builder = GraphBuilder(_comp_factory = factory)
+        service_graph = graph_builder.build(actx.service_graph)
+
+        result = service_graph.print_element()
+
+        self.assertEqual(flatten_str(result), flatten_str(expected_rusult))
 
 
     def test_pretty_print(self):
@@ -322,7 +367,8 @@ class TestPlugin(unittest.TestCase):
         wp_mock._node_instance['id'] = 'wordpress_k8lr3c'
         rp_mock._node_instance['id'] = 'runtime_policy_7vy2nn'
 
-        con_to_type = ['cloudify.relationships.depends_on', 'cloudify.relationships.connected_to', 'cloudify.arcadia.relationships.connected_to', 'wordpress_connected_to_mysql']
+        con_to_type = ['cloudify.relationships.depends_on', 'cloudify.relationships.connected_to',
+                            'cloudify.arcadia.relationships.connected_to', 'wordpress_connected_to_mysql']
         con_in_type = ['cloudify.relationships.contained_in', 'cloudify.arcadia.relationships.contained_in']
 
         mysql_mock._relationship_instances['service_graph_gm17g6'] = CloudifyWorkflowRelationshipInstanceMock(node_instance=sg_mock, type_hierarchy=con_in_type)
@@ -333,7 +379,7 @@ class TestPlugin(unittest.TestCase):
 
         graph_builder = GraphBuilder(_comp_factory = ComponentFactory(ARCADIAPrettyPrinter()))
         service_graph = graph_builder.build(sg_mock)
-        
+
         self.assertTrue(isinstance(service_graph, ServiceGraphElement))
         self.assertTrue(len(service_graph.components) == 2)
         self.assertTrue(len(service_graph.policies) == 1)
