@@ -1,5 +1,5 @@
 from plugin.srv_graph.graph_element import *
-from plugin.srv_graph.abstract.abc_pretty_printer import ABCPrettyPrinter
+from plugin.abstract.abc_pretty_printer import ABCPrettyPrinter
 
 
 class DefaultPrettyPrinter(ABCPrettyPrinter):

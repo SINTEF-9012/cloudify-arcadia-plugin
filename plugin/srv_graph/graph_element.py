@@ -1,4 +1,4 @@
-from plugin.srv_graph.abstract.abc_graph_elements import ABCGraphElement
+from plugin.abstract.abc_graph_elements import ABCGraphElement
 from plugin.utils.klasses import Singleton
 
 class GraphElement(ABCGraphElement):

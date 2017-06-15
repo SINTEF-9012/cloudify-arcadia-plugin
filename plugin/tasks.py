@@ -39,14 +39,14 @@ from plugin.api.service_graph import ARCADIAServiceGraphAPI
 @operation
 def create_component(**kwargs):
 	print "!!!!!!!!!!!!!!!! calling create commponent for the instance with " + ctx.instance.id + " and the node" + ctx.node.name
-	api = ARCADIAComponentAPI(test_mode=kwargs.get('test_mode'))
+	api = ARCADIAComponentAPI(client=actx.client)
 	api.create_component(_instance=actx.components[kwargs.get('id')])
 
 
 @operation
 def preconfigure_source(**kwargs):
 	print "**************** priconfigure_source"
-	api = ARCADIARelationshipAPI(test_mode=kwargs.get('test_mode'))
+	api = ARCADIARelationshipAPI(client=actx.client)
 	api.preconfig_src_relationship(_instance=actx.relationships[kwargs.get('id')])
 
 
@@ -66,7 +66,6 @@ def install_arcadia(operations, **kwargs):
 			sequence = graph.sequence()
 			inst_kwargs = dict() 
 			inst_kwargs['id'] = actx.test_component(instance)
-			inst_kwargs['test_mode'] = kwargs.get('test_mode')
 			sequence.add(
 				send_event_starting_tasks[instance.id],
 				instance.execute_operation("create", kwargs=inst_kwargs),
@@ -78,7 +77,6 @@ def install_arcadia(operations, **kwargs):
 			for relationship in instance.relationships:
 				rel_kwargs = dict()
 				rel_kwargs['id'] = actx.test_relationship(relationship)
-				rel_kwargs['test_mode'] = kwargs.get('test_mode')
 				sequence.add(
 					relationship.execute_source_operation('preconfigure', kwargs=rel_kwargs))
 
@@ -92,6 +90,6 @@ def install_arcadia(operations, **kwargs):
 
 	graph.execute()
 
-	api = ARCADIAServiceGraphAPI(test_mode=kwargs.get('test_mode'))
+	api = ARCADIAServiceGraphAPI(client=actx.client)
 	service_graph_tree = api.generate_service_graph(actx.service_graph)
 	api.install_service_graph(service_graph_tree)

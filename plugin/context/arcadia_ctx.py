@@ -11,13 +11,24 @@ class ARCADIAContext(object):
 		self._components = dict()
 		self._relationships = dict()
 		self._service_graph_instance = None
+		self._client = None
+
+	@property
+	def client(self):
+		if self._client == None:
+			raise NotImplementedError('should not be none!')
+		return self._client
+
+	@client.setter
+	def client(self, _instance):
+		self._client = _instance
 
 	@property
 	def service_graph(self):
 		return self._service_graph_instance
 
 	@service_graph.setter
-	def service_graph_setter(self, _instance):
+	def service_graph(self, _instance):
 		self._service_graph_instance = _instance
 
 	@property

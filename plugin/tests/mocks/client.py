@@ -1,0 +1,3 @@
+
+class ARCADIAClientMock(object):
+	pass

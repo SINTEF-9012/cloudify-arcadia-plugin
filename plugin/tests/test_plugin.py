@@ -32,6 +32,7 @@ from plugin.srv_graph.pretty_printer import ARCADIAPrettyPrinter
 
 from plugin.tests.mocks.nodes import CloudifyWorlkflowNodeInstanceMock
 from plugin.tests.mocks.nodes import CloudifyWorkflowRelationshipInstanceMock
+from plugin.tests.mocks.client import ARCADIAClientMock
 
 from plugin.context import actx
 
@@ -115,6 +116,8 @@ class TestPlugin(unittest.TestCase):
             </ServiceGraph>       
         '''
 
+        actx.client = ARCADIAClientMock()
+        
         cfy_local.execute('install_arcadia', 
             task_retries=0,
             parameters={ 'test_mode' : True }, 
