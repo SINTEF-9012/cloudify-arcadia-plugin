@@ -12,6 +12,7 @@ class ARCADIAContext(object):
 		self._relationships = dict()
 		self._service_graph_instance = None
 		self._client = None
+		self._service_graph_tree = None
 
 	@property
 	def client(self):
@@ -30,7 +31,7 @@ class ARCADIAContext(object):
 	@service_graph.setter
 	def service_graph(self, _instance):
 		if not self._service_graph_instance == None:
-			raise Exception('service graph is already set, do you have two service graphs?')
+			raise Exception('service graph is already set, do you have few service graphs?')
 		self._service_graph_instance = _instance
 
 	@property
@@ -52,6 +53,8 @@ class ARCADIAContext(object):
 		if not self._relationships.get(obj_id):
 			self._relationships[obj_id] = _relationship
 		return obj_id
+
+
 
 current_arcadia_context = ARCADIAContext()
 

@@ -39,14 +39,12 @@ from plugin.api.policy import ARCADIAPolicyAPI
 
 @operation
 def create_component(**kwargs):
-	print "!!!!!!!!!!!!!!!! calling create commponent for the instance with " + ctx.instance.id + " and the node" + ctx.node.name
 	api = ARCADIAComponentAPI(client=actx.client)
 	api.init_component(_instance=actx.components[kwargs.get('id')])
 
 
 @operation
 def create_serv_graph(**kwargs):
-	print "!!!!!!!!!!!!!!!!!!!!!! create_serv_graph"
 	api = ARCADIAServiceGraphAPI(client=actx.client)
 	api.init_service_graph(_instance=actx.components[kwargs.get('id')])
 	actx.service_graph = actx.components[kwargs.get('id')]
@@ -54,21 +52,18 @@ def create_serv_graph(**kwargs):
 
 @operation
 def create_policy(**kwargs):
-	print "!!!!!!!!!!!!!!!!!!!!!! create_policy"
 	api = ARCADIAPolicyAPI(client=actx.client)
 	api.init_policy(_instance=actx.components[kwargs.get('id')])
 
 
 @operation
 def preconfig_rship_source(**kwargs):
-	print "**************** preconfig_rship_source"
 	api = ARCADIARelationshipAPI(client=actx.client)
 	api.preconfig_src_relationship(_instance=actx.relationships[kwargs.get('id')])
 
 
 @workflow
 def install_arcadia(operations, **kwargs):
-	print "**************** install workflow is initialized ****************"
 	graph = wctx.graph_mode()
 	send_event_starting_tasks = {}
 	send_event_done_tasks = {}
@@ -106,6 +101,5 @@ def install_arcadia(operations, **kwargs):
 
 	graph.execute()
 
-	api = ARCADIAServiceGraphAPI(client=actx.client)
-	service_graph_tree = api.generate_service_graph(actx.service_graph)
-	api.install_service_graph(service_graph_tree)
+	actx.client.generate_service_graph(actx.service_graph)
+	actx.client.install_service_graph()

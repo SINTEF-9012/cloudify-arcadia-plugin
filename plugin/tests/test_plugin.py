@@ -36,7 +36,7 @@ from plugin.tests.mocks.client import ARCADIAClientMock
 
 from plugin.context import actx
 
-
+from plugin.tests.utils.xml_compare import XmlTree
 
 def flatten_str(string):
     return re.sub('[\n\s\t]', '', string)
@@ -84,8 +84,7 @@ class TestPlugin(unittest.TestCase):
                    resources_to_copy=[path.join('blueprint',
                                                 'test_plugin.yaml')])
     def test_install_arcadia_workflow(self, cfy_local):
-        expected_rusult = '''
-            <?xml version="1.0" encoding="UTF-8"?>
+        expected_result = '''<?xml version="1.0" encoding="UTF-8"?>
             <ServiceGraph xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ArcadiaModellingArtefacts.xsd">
               <DescriptiveSGMetadata>
                 <SGID>wordpress_mysql_service_graph_id</SGID>
@@ -113,8 +112,7 @@ class TestPlugin(unittest.TestCase):
                   <RPName>RPName</RPName>
                 </RuntimePolicy>
               </RuntimePolicyDescriptor>
-            </ServiceGraph>       
-        '''
+            </ServiceGraph>'''
 
         actx.client = ARCADIAClientMock()
         
@@ -123,13 +121,27 @@ class TestPlugin(unittest.TestCase):
             parameters={ 'test_mode' : True }, 
             allow_custom_parameters=True)
 
-        factory = ComponentFactory(ARCADIAPrettyPrinter())
-        graph_builder = GraphBuilder(_comp_factory = factory)
-        service_graph = graph_builder.build(actx.service_graph)
+        service_graph = actx.client._service_graph_tree
+        self.assertTrue(isinstance(service_graph, ServiceGraphElement))
+        self.assertTrue(len(service_graph.components) == 2)
+        self.assertTrue(len(service_graph.policies) == 1)
 
-        result = service_graph.print_element()
+        def find_component(array, component):
+            for comp in array:
+                if comp._instance._node_instance['name'] == component:
+                    return comp
+            return
 
-        self.assertEqual(flatten_str(result), flatten_str(expected_rusult))
+        mysql_comp = find_component(service_graph.components, 'mysql')
+        wp_comp = find_component(service_graph.components, 'wordpress')
+        self.assertTrue(mysql_comp)
+        self.assertTrue(wp_comp)
+        self.assertTrue(len(wp_comp.dependencies) == 1)
+        self.assertTrue(wp_comp.dependencies[0].target._instance == mysql_comp._instance)
+
+        expected_root = XmlTree.convert_string_to_tree(expected_result)
+        actual_root = XmlTree.convert_string_to_tree(actx.client._service_graph_printed)
+        self.assertTrue(XmlTree().xml_isomorphic(expected_root, actual_root))
 
 
     def test_pretty_print(self):

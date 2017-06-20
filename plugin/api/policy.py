@@ -5,4 +5,5 @@ class ARCADIAPolicyAPI(object):
 		self.client = client
 
 	def init_policy(self, _instance):
-		pass
+		self.client.create_policy(_instance)
+		self.client.config_policy(_instance)

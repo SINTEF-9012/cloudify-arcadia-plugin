@@ -1,8 +1,8 @@
 
 class ARCADIAServiceGraphAPI(object):
 
-	def __init__(self, *args, **kwargs):
-		pass
+	def __init__(self, client, **kwargs):
+		self.client = client
 
 	def generate_service_graph(self, _instance):
 		pass
@@ -14,4 +14,5 @@ class ARCADIAServiceGraphAPI(object):
 		pass
 
 	def init_service_graph(self, _instance):
-		pass
+		self.client.create_srv_graph(_instance)
+		self.client.config_srv_graph(_instance)
