@@ -29,6 +29,8 @@ class ARCADIAContext(object):
 
 	@service_graph.setter
 	def service_graph(self, _instance):
+		if not self._service_graph_instance == None:
+			raise Exception('service graph is already set, do you have two service graphs?')
 		self._service_graph_instance = _instance
 
 	@property

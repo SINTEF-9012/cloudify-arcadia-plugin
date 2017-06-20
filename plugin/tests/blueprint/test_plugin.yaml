@@ -50,6 +50,10 @@ node_types:
                 type: string
                 default: "Default_Service_Graph_Description"
                 required: false
+        interfaces:
+            cloudify.interfaces.lifecycle:
+                create_and_configure:
+                    implementation: cloudify_arcadia_plugin.plugin.tasks.create_serv_graph
 
     cloudify.arcadia.nodes.RuntimePolicy:
         derived_from: cloudify.nodes.Root
@@ -66,6 +70,10 @@ node_types:
                 type: string
                 default: "Default_Runtime_Policy_Name"
                 required: false
+        interfaces:
+            cloudify.interfaces.lifecycle:
+                create_and_configure:
+                    implementation: cloudify_arcadia_plugin.plugin.tasks.create_policy
 
     cloudify.arcadia.nodes.WrappedComponent:
         derived_from: cloudify.nodes.SoftwareComponent
@@ -97,7 +105,7 @@ node_types:
                 required: false
         interfaces:
             cloudify.interfaces.lifecycle:
-                create:
+                create_and_configure:
                     implementation: cloudify_arcadia_plugin.plugin.tasks.create_component
 
 relationships:
@@ -109,7 +117,7 @@ relationships:
         source_interfaces:
             cloudify.interfaces.relationship_lifecycle:
                 preconfigure:
-                    implementation: cloudify_arcadia_plugin.plugin.tasks.preconfigure_source
+                    implementation: cloudify_arcadia_plugin.plugin.tasks.preconfig_rship_source
 
 workflows:
     install_arcadia:

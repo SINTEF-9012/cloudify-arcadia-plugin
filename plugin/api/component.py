@@ -1,8 +1,9 @@
 
 class ARCADIAComponentAPI(object):
 
-	def __init__(self, *args, **kwargs):
-		pass
+	def __init__(self, client, **kwargs):
+		self.client = client
 
-	def create_component(self, _instance):
-		pass
+	def init_component(self, _instance):
+		self.client.create_comp(_instance)
+		self.client.config_comp(_instance)

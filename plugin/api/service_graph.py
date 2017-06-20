@@ -10,5 +10,8 @@ class ARCADIAServiceGraphAPI(object):
 	def print_service_graph(self, _instance):
 		pass
 
-	def install_service_graph(self, _service_graph):
+	def install_service_graph(self, _instance):
+		pass
+
+	def init_service_graph(self, _instance):
 		pass
