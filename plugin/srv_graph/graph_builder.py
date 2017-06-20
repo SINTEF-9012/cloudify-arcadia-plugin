@@ -32,7 +32,7 @@ class GraphBuilder(object):
 
 		for relationship in relationships:
 			source_id, target_id, rel_obj = relationship[0], relationship[1], relationship[2]
-			if self.conto_rel_type in rel_obj._relationship.type_hierarchy:
+			if self.conto_rel_type in rel_obj._relationship._relationship['type_hierarchy']:
 				dep_comp = ComponentFactoryFacade.INSTANCE.create_component_dependency(
 					_instance=rel_obj, _source=dic_elem[source_id], _target=dic_elem[target_id])
 				dic_elem[source_id].add_dependency(dep_comp)

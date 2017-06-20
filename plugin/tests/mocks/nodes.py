@@ -58,13 +58,13 @@ class RelationshipInstanceMock(dict):
 		self.update(relationship)
 
 
-	@property
-	def type_hierarchy(self):
-		"""
-		:return: The type hierarchy of this node.
-		:rtype: list
-		"""
-		return self['type_hierarchy']
+#	@property
+#	def type_hierarchy(self):
+#		"""
+#		:return: The type hierarchy of this node.
+#		:rtype: list
+#		"""
+#		return self['type_hierarchy']
 
 
 class CloudifyWorkflowRelationshipMock(object):
@@ -72,9 +72,9 @@ class CloudifyWorkflowRelationshipMock(object):
 	def __init__(self, relationship):
 		self._relationship = relationship
 
-	@property
-	def type_hierarchy(self):
-		return self._relationship.type_hierarchy
+#	@property
+#	def type_hierarchy(self):
+#		return self._relationship.type_hierarchy
 
 
 class CloudifyWorkflowRelationshipInstanceMock(object):
