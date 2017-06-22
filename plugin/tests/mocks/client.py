@@ -16,6 +16,8 @@ class ARCADIAClientMock(object):
 
 	def config_comp(self, _instance):
 		if _instance._node_instance['name'] == 'mysql':
+			#print "!!!!!!!!!!!!!!!!!!!!!"
+			#print _instance._node._node.properties['component_jar_path']
 			_instance._node_instance.runtime_properties['nid'] = 'graph_node_mysql_id'
 			_instance._node_instance.runtime_properties['cnid'] = 'mysql_id'
 			_instance._node_instance.runtime_properties['cepcid'] = 'mysqltcp_cepcid'

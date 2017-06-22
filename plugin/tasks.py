@@ -39,6 +39,9 @@ from plugin.api.policy import ARCADIAPolicyAPI
 
 @operation
 def create_component(**kwargs):
+	#print "!!!!!!!!!!!!!!!!!!!!!!!aaaaaaaaaaaaaaaaaa"
+	#print type(ctx.node.properties)
+	#print ctx.node.properties['use_external_resource']
 	api = ARCADIAComponentAPI(client=actx.client)
 	api.init_component(_instance=actx.components[kwargs.get('id')])
 

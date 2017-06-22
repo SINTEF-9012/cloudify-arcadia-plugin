@@ -1,5 +1,7 @@
 from plugin.utils.klasses import Singleton
 
+from plugin.api.client_facade_api import ARCADIAClientFacade
+
 from proxy_tools import proxy
 
 
@@ -17,7 +19,7 @@ class ARCADIAContext(object):
 	@property
 	def client(self):
 		if self._client == None:
-			raise NotImplementedError('should not be none!')
+			self._client = ARCADIAClientFacade()
 		return self._client
 
 	@client.setter
