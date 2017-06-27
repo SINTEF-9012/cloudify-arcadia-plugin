@@ -69,7 +69,7 @@ class ARCADIAPrettyPrinter(ABCPrettyPrinter):
 		result += '<ServiceGraph xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ArcadiaModellingArtefacts.xsd">\n'
 
 		result += ' <DescriptiveSGMetadata>\n'
-		result += '  <SGID>' + _node_instance.runtime_properties['sgid'] + '</SGID>\n'
+		result += '  <SGID>' + str(_node_instance.runtime_properties['sgid']) + '</SGID>\n'
 		result += '  <SGName>' + _node_instance.runtime_properties['sgname'] + '</SGName>\n'
 		result += '  <SGDescription>' + _node_instance.runtime_properties['sgdesc'] + '</SGDescription>\n'
 		result += ' </DescriptiveSGMetadata>\n'
@@ -92,7 +92,7 @@ class ARCADIAPrettyPrinter(ABCPrettyPrinter):
 		_node_instance = _instance._node_instance
 		
 		result = '  <GraphNode>\n'
-		result += '   <NID>' + _node_instance.runtime_properties['nid'] + '</NID>\n'
+		result += '   <NID>' + str(_node_instance.runtime_properties['nid']) + '</NID>\n'
 		result += '   <CNID>' + _node_instance.runtime_properties['cnid'] + '</CNID>\n'
 		for dependency in component.dependencies:
 			result += self._print_dependency(dependency)
@@ -108,7 +108,7 @@ class ARCADIAPrettyPrinter(ABCPrettyPrinter):
 		result = '   <GraphDependency>\n'
 		result += '    <CEPCID>' + _node_instance_target.runtime_properties['cepcid'] + '</CEPCID>\n'
 		result += '    <ECEPID>' + _node_instance_target.runtime_properties['ecepid'] + '</ECEPID>\n'
-		result += '    <NID>' + runtime_prop['nid'] + '</NID>\n'
+		result += '    <NID>' + str(runtime_prop['nid']) + '</NID>\n'
 		result += '   </GraphDependency>\n'
 		return result
 
@@ -117,7 +117,7 @@ class ARCADIAPrettyPrinter(ABCPrettyPrinter):
 		_node_instance = _instance._node_instance
 
 		result = '  <RuntimePolicy>\n'
-		result += '   <RPID>' + _node_instance.runtime_properties['rpid'] + '</RPID>\n'
+		result += '   <RPID>' + str(_node_instance.runtime_properties['rpid']) + '</RPID>\n'
 		result += '   <RPName>' + _node_instance.runtime_properties['rpname'] + '</RPName>\n'
 		result += '  </RuntimePolicy>\n'
 		return result

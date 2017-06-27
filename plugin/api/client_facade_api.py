@@ -1,4 +1,5 @@
 from plugin.api.rest_api_client import ARCADIARestAPIClient
+from plugin.utils.tools import Tools
 
 
 class ARCADIAClientFacade(object):
@@ -19,7 +20,7 @@ class ARCADIAClientFacade(object):
 
 		component = result['response']
 
-		_instance._node_instance.runtime_properties['nid'] = 'some_unique_id'
+		_instance._node_instance.runtime_properties['nid'] = Tools.generate_unique_id(_instance)
 		_instance._node_instance.runtime_properties['cnid'] = cnid
 
 		if component.cepcid:
@@ -33,7 +34,7 @@ class ARCADIAClientFacade(object):
 
 	def config_srv_graph(self, _instance):
 		#generate this id
-		_instance._node_instance.runtime_properties['sgid'] = 'wordpress_mysql_service_graph_id'
+		_instance._node_instance.runtime_properties['sgid'] = Tools.generate_unique_id(_instance)
 		
 		sgname = _instance._node._node.properties['sgname']
 		sgdesc = _instance._node._node.properties['sgdesc']
@@ -53,7 +54,7 @@ class ARCADIAClientFacade(object):
 
 	def preconfig_src_relationship(self, _instance):
 		#nid should be generated
-		_instance._relationship_instance['runtime_properties'] = {'nid': 'NID'}
+		_instance._relationship_instance['runtime_properties'] = {'nid': Tools.generate_unique_id(_instance)}
 
 	def generate_service_graph(self, _service_graph):
 		factory = ComponentFactory(self._pretty_printer)
