@@ -17,7 +17,7 @@ class ARCADIAClientFacade(object):
 				' use_external_resource is set to false for: "' + node_name +'"')
 
 	def config_comp(self, _instance):
-		cnid = _instance._node._node.properties['cnid']
+		cnid = _instance._node._node.properties['external_component_id']
 		result = self._rest_api.get_component_info(cnid)
 
 		if result['rc'] != 0:

@@ -112,7 +112,7 @@ def install_arcadia(operations, **kwargs):
 		actx.client.generate_service_graph(actx.service_graph)
 		actx.client.install_service_graph()
 	except NotImplementedError:
-		wctx.logger.error('cancel service graph deployment: failed to generate or install graph, due to some missing functionality')
+		wctx.logger.error('cancel service graph deployment: failed to generate or install graph, due too some missing functionality')
 		raise api.ExecutionCancelled()
 	except ARCADIAServerRequestError as ex:
 		wctx.logger.error('cancel service graph deployment: arcadia server responded with an error message: {0}'.format(ex.message))
