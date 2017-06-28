@@ -22,13 +22,17 @@ from cloudify.workflows import ctx as wctx
 from cloudify.decorators import operation
 from cloudify.decorators import workflow
 
-from plugin.srv_graph.graph_element import ComponentFactoryFacade
 from plugin.context import actx
+from cloudify.workflows import api
+from plugin.srv_graph.graph_element import ComponentFactoryFacade
 from plugin.api.component import ARCADIAComponentAPI
 from plugin.api.relationship import ARCADIARelationshipAPI
 from plugin.api.service_graph import ARCADIAServiceGraphAPI
 from plugin.api.policy import ARCADIAPolicyAPI
+from plugin.errors.exceptions import ARCADIAServerRequestError
 
+
+from cloudify.workflows import api
 
 
 #@operation
@@ -102,9 +106,15 @@ def install_arcadia(operations, **kwargs):
 				if instance_starting_task and target_done_task:
 					graph.add_dependency(instance_starting_task, target_done_task)
 
-	result = graph.execute()
+	graph.execute()
 
-	actx.client.generate_service_graph(actx.service_graph)
-	actx.client.install_service_graph()
-
-	return result
+	try:
+		actx.client.generate_service_graph(actx.service_graph)
+		actx.client.install_service_graph()
+	except NotImplementedError:
+		wctx.logger.error('cancel service graph deployment: failed to generate or install graph, due to some missing functionality')
+		raise api.ExecutionCancelled()
+	except ARCADIAServerRequestError as ex:
+		wctx.logger.error('cancel service graph deployment: arcadia server responded with an error message: {0}'.format(ex.message))
+		raise api.ExecutionCancelled()
+	

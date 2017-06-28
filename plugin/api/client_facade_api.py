@@ -1,5 +1,6 @@
 from plugin.api.rest_api_client import ARCADIARestAPIClient
 from plugin.utils.tools import Tools
+from plugin.errors.exceptions import ARCADIAServerRequestError
 
 
 class ARCADIAClientFacade(object):
@@ -20,7 +21,7 @@ class ARCADIAClientFacade(object):
 		result = self._rest_api.get_component_info(cnid)
 
 		if result['rc'] != 0:
-			raise Exception(result['message'])
+			raise ARCADIAServerRequestError(message = result['message'])
 
 		component = result['response']
 
@@ -77,4 +78,4 @@ class ARCADIAClientFacade(object):
 		result = self._rest_api.register_service_graph(self._service_graph_tree)
 
 		if result['rc'] != 0:
-			raise Exception(result['message'])
+			raise ARCADIAServerRequestError(message = result['message'])
