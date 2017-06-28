@@ -82,7 +82,7 @@ node_types:
                 description: >
                     Set this to true if an arcadia component already exists
                 type: boolean
-                default: false
+                default: true
                 required: false
             external_component_id:
                 description: >

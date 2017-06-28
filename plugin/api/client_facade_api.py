@@ -9,7 +9,11 @@ class ARCADIAClientFacade(object):
 		self._pretty_printer = ARCADIAPrettyPrinter()
 
 	def create_comp(self, _instance):
-		pass
+		use_external_resource = _instance._node._node.properties['use_external_resource']
+		if not use_external_resource:
+			node_name = _instance._node_instance['name']
+			raise NotImplementedError('cannot create a component (not implemented): '\
+				' use_external_resource is set to false for: "' + node_name +'"')
 
 	def config_comp(self, _instance):
 		cnid = _instance._node._node.properties['cnid']
@@ -30,24 +34,32 @@ class ARCADIAClientFacade(object):
 			_instance._node_instance.runtime_properties['ecepid'] = component.ecepid
 
 	def create_srv_graph(self, _instance):
-		pass
+		use_external_resource = _instance._node._node.properties['use_external_resource']
+		if use_external_resource:
+			node_name = _instance._node_instance['name']
+			raise NotImplementedError('cannot use existing service graph (not implemented): '\
+				'use_external_resource is set to true for: "' + node_name +'"')
 
 	def config_srv_graph(self, _instance):
 		#generate this id
 		_instance._node_instance.runtime_properties['sgid'] = Tools.generate_unique_id(_instance)
 		
-		sgname = _instance._node._node.properties['sgname']
-		sgdesc = _instance._node._node.properties['sgdesc']
+		sgname = _instance._node._node.properties['service_graph_name']
+		sgdesc = _instance._node._node.properties['service_graph_desc']
 
 		_instance._node_instance.runtime_properties['sgname'] = sgname
 		_instance._node_instance.runtime_properties['sgdesc'] = sgdesc
 
 	def create_policy(self, _instance):
-		pass
+		use_external_resource = _instance._node._node.properties['use_external_resource']
+		if not use_external_resource:
+			node_name = _instance._node_instance['name']
+			raise NotImplementedError('cannot create a policy (not implemented): '
+				'use_external_resource is set to false for: "' + node_name +'"')
 
 	def config_policy(self, _instance):
-		rpid = _instance._node._node.properties['rpid']
-		rpname = _instance._node._node.properties['rpname']
+		rpid = _instance._node._node.properties['external_runtime_policy_id']
+		rpname = _instance._node._node.properties['runtime_policy_name']
 
  		_instance._node_instance.runtime_properties['rpid'] = rpid
 		_instance._node_instance.runtime_properties['rpname'] = rpname

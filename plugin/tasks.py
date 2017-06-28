@@ -102,7 +102,9 @@ def install_arcadia(operations, **kwargs):
 				if instance_starting_task and target_done_task:
 					graph.add_dependency(instance_starting_task, target_done_task)
 
-	graph.execute()
+	result = graph.execute()
 
 	actx.client.generate_service_graph(actx.service_graph)
 	actx.client.install_service_graph()
+
+	return result
