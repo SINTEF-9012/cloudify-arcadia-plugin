@@ -53,3 +53,7 @@ class ARCADIAClientMock(object):
 
 	def install_service_graph(self):
 		self._service_graph_printed = self._service_graph_tree.print_element()
+
+
+class ARCADIARestAPIClientMock(object):
+	pass

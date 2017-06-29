@@ -23,6 +23,20 @@ class NodeInstanceMock(dict):
 		return self['type_hierarchy']
 
 
+class NodeMock(dict):
+
+	def __init__(self, properties):
+		self.update(properties)
+	
+	@property
+	def properties(self):
+		return self.get('properties')
+
+	@property
+	def type_hierarchy(self):
+		return self['type_hierarchy']
+
+
 class CloudifyWorkflowNodeMock(object):
 
 	def __init__(self, node):
@@ -45,11 +59,14 @@ class CloudifyWorlkflowNodeInstanceMock(object):
 
 		self._relationship_instances = collections.OrderedDict()
 
-		self._node_instance['type_hierarchy'] = list(kwargs.get('type_hierarchy')) \
+		properties = dict(kwargs.get('node_properties')) \
+			if kwargs.get('node_properties') else dict()
+
+		properties['type_hierarchy'] = list(kwargs.get('type_hierarchy')) \
 			if kwargs.get('type_hierarchy') else []
 
 		self._node = kwargs.get('node') if kwargs.get('node') \
-											else CloudifyWorkflowNodeMock(self._node_instance)
+											else CloudifyWorkflowNodeMock(NodeMock(properties))
 
 
 class RelationshipInstanceMock(dict):

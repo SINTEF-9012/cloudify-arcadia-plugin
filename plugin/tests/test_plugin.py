@@ -26,6 +26,7 @@ from plugin.srv_graph.graph_element import ComponentDependencyElement
 from plugin.srv_graph.graph_element import ComponentFactory
 from plugin.srv_graph.graph_element import ComponentFactoryFacade
 from plugin.srv_graph.graph_builder import GraphBuilder
+from plugin.api.client_facade_api import ARCADIAClientFacade
 
 from plugin.srv_graph.pretty_printer import DefaultPrettyPrinter
 from plugin.srv_graph.pretty_printer import ARCADIAPrettyPrinter
