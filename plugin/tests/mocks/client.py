@@ -56,4 +56,15 @@ class ARCADIAClientMock(object):
 
 
 class ARCADIARestAPIClientMock(object):
-	pass
+	
+	def __init__(self, *args, **kwargs):
+		self.fail_request = False
+
+	def get_component_info(self, cnid):
+		if self.fail_request:
+			return {'rc' : 1, 'message' : 'failed to request server, wrong params'}
+		
+		
+
+	def register_service_graph(self, service_tree):
+		pass

@@ -21,21 +21,21 @@ class TestPlugin(unittest.TestCase):
 
 		sg_node_properties = dict()
 		sg_node_properties['use_external_resource'] = False
-		sg_node_properties['service_graph_name'] = 'SimpleWordPressServiceGraph'
-		sg_node_properties['service_graph_desc'] = 'SGDescription'
+		#sg_node_properties['service_graph_name'] = 'SimpleWordPressServiceGraph'
+		#sg_node_properties['service_graph_desc'] = 'SGDescription'
 
 		mysql_node_properteis = dict()
 		mysql_node_properteis['use_external_resource'] = True
-		mysql_node_properteis['external_component_id'] = 'graph_node_mysql_id'
+		#mysql_node_properteis['external_component_id'] = 'graph_node_mysql_id'
 
 		wp_node_properteis = dict()
 		wp_node_properteis['use_external_resource'] = True
-		wp_node_properteis['external_component_id'] = 'graph_node_wordpress_id'
+		#wp_node_properteis['external_component_id'] = 'graph_node_wordpress_id'
 
 		rp_node_properteis = dict()
-		rp_node_properteis['use_external_resource'] = False
-		rp_node_properteis['external_runtime_policy_id'] = 'RPID'
-		rp_node_properteis['runtime_policy_name'] = 'RPName'
+		rp_node_properteis['use_external_resource'] = True
+		#rp_node_properteis['external_runtime_policy_id'] = 'RPID'
+		#rp_node_properteis['runtime_policy_name'] = 'RPName'
 
 		self.sg_mock = CloudifyWorlkflowNodeInstanceMock(type_hierarchy = srv_graph_type, node_properties = sg_node_properties)
 		self.mysql_mock = CloudifyWorlkflowNodeInstanceMock(type_hierarchy = wrap_comp_type, node_properties = mysql_node_properteis)
@@ -81,6 +81,7 @@ class TestPlugin(unittest.TestCase):
 		except ARCADIAServerRequestError:
 			self.assertTrue(False, 'none of the calls should fail')
 
+
 	def test_client_facade_failed_create_component(self):
 		rest_api_mock = ARCADIARestAPIClientMock()
 		rest_api_mock.fail_request = True
@@ -94,6 +95,7 @@ class TestPlugin(unittest.TestCase):
 			exception_raised = True
 
 		self.assertTrue(exception_raised, 'exception was not raised!')
+
 
 	def test_client_facade_failed_submit_graph(self):
 		rest_api_mock = ARCADIARestAPIClientMock()
