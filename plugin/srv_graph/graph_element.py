@@ -82,7 +82,7 @@ class ComponentFactory(object):
 #ComponentFactoryFacade.INSANCE.createComponentElement()
 
 class ComponentFactoryFacade(object):
-	
+
 	__metaclass__ = Singleton
 
 	INSTANCE = None
@@ -93,4 +93,3 @@ class ComponentFactoryFacade(object):
 	@classmethod
 	def set_factory(cls, _factory):
 		cls.INSTANCE = _factory
-
