@@ -6,11 +6,11 @@ class DefaultPrettyPrinter(ABCPrettyPrinter):
 
 	def print_pretty(self, node):
 		result = ""
-		if type(node) is ServiceGraphElement:
+		if isinstance(node, ServiceGraphElement):
 			result = self._print_service_graph(node)
-		elif type(node) is ComponentElement:
+		elif isinstance(node, ComponentElement):
 			result = self._print_component(node)
-		elif type(node) is ComponentDependencyElement:
+		elif isinstance(node, ComponentDependencyElement):
 			result = self._print_dependency(node)
 		else:
 			raise NotImplementedError("unknown node type: " + node)
@@ -18,7 +18,7 @@ class DefaultPrettyPrinter(ABCPrettyPrinter):
 
 	def _print_service_graph(self, service_graph):
 		_instance = service_graph.get_instance()
-		name = _instance if type(_instance) == str else str(_instance)
+		name = _instance if isinstance(_instance, str) else str(_instance)
 		result = "<service_graph> \n" + name + "\n"
 		for component in service_graph.components:
 			result += self._print_component(component)
@@ -27,7 +27,7 @@ class DefaultPrettyPrinter(ABCPrettyPrinter):
 
 	def _print_component(self, component):
 		_instance = component.get_instance()
-		name = _instance if type(_instance) == str else str(_instance)
+		name = _instance if isinstance(_instance, str) else str(_instance)
 		result = " <graph_node>\n " + name + "\n"
 		for dependency in component.dependencies:
 			result+= self._print_dependency(dependency)
@@ -36,9 +36,9 @@ class DefaultPrettyPrinter(ABCPrettyPrinter):
 
 	def _print_dependency(self, dependency):
 		_instance = dependency.source.get_instance() if dependency.source else "Unknown"
-		name_source = _instance if type(_instance) == str else str(_instance)
+		name_source = _instance if isinstance(_instance, str) else str(_instance)
 		_instance = dependency.target.get_instance() if dependency.target else "Unknown"
-		name_target = _instance if type(_instance) == str else str(_instance)
+		name_target = _instance if isinstance(_instance, str) else str(_instance)
 		result = "  <graph_node_dependency>\n  " + \
 				str(name_source) + "->" + str(name_target) + "\n"
 		result += "  </graph_node_dependency>\n"
@@ -49,13 +49,13 @@ class ARCADIAPrettyPrinter(ABCPrettyPrinter):
 
 	def print_pretty(self, node):
 		result = ""
-		if type(node) is ServiceGraphElement:
+		if isinstance(node, ServiceGraphElement):
 			result = self._print_service_graph(node)
-		elif type(node) is ComponentElement:
+		elif isinstance(node, ComponentElement):
 			result = self._print_component(node)
-		elif type(node) is ComponentDependencyElement:
+		elif isinstance(node, ComponentDependencyElement):
 			result = self._print_dependency(node)
-		elif type(node) is RuntimePolicyElement:
+		elif isinstance(node, RuntimePolicyElement):
 			result = self._print_policy(node)
 		else:
 			raise NotImplementedError("unknown node type: " + node)

@@ -1,7 +1,5 @@
 from plugin.utils.klasses import Singleton
-
 from plugin.api.client_facade_api import ARCADIAClientFacade
-
 from proxy_tools import proxy
 
 
