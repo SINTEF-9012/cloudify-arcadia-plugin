@@ -5,8 +5,13 @@ from plugin.srv_graph.pretty_printer import ARCADIAPrettyPrinter
 from plugin.srv_graph.graph_element import ComponentFactory
 from plugin.srv_graph.graph_builder import GraphBuilder
 
+from plugin.utils.klasses import Singleton
+
+
 
 class ARCADIAClientFacade(object):
+
+	__metaclass = Singleton
 	
 	def __init__(self, api_client=None, pretty_printer=None):
 		self._rest_api = api_client if api_client else ARCADIARestAPIClient()
