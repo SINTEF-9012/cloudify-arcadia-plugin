@@ -1,5 +1,4 @@
 from plugin.srv_graph.graph_element import ComponentFactoryFacade
-from plugin.srv_graph.pretty_printer import DefaultPrettyPrinter
 
 
 class GraphBuilder(object):

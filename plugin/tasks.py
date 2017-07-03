@@ -24,15 +24,11 @@ from cloudify.decorators import workflow
 
 from plugin.context import actx
 from cloudify.workflows import api
-from plugin.srv_graph.graph_element import ComponentFactoryFacade
 from plugin.api.component import ARCADIAComponentAPI
 from plugin.api.relationship import ARCADIARelationshipAPI
 from plugin.api.service_graph import ARCADIAServiceGraphAPI
 from plugin.api.policy import ARCADIAPolicyAPI
 from plugin.errors.exceptions import ARCADIAServerRequestError
-
-
-from cloudify.workflows import api
 
 
 #@operation
