@@ -5,6 +5,7 @@ from plugin.tests.mocks.nodes import CloudifyWorkflowRelationshipInstanceMock
 from plugin.tests.mocks.client import ARCADIAClientMock
 from plugin.tests.mocks.client import ARCADIARestAPIClientMock
 from plugin.errors.exceptions import ARCADIAServerRequestError
+from plugin.api.client_facade_api import ARCADIAClientFacade
 
 
 class TestPlugin(unittest.TestCase):
@@ -21,21 +22,21 @@ class TestPlugin(unittest.TestCase):
 
 		sg_node_properties = dict()
 		sg_node_properties['use_external_resource'] = False
-		#sg_node_properties['service_graph_name'] = 'SimpleWordPressServiceGraph'
-		#sg_node_properties['service_graph_desc'] = 'SGDescription'
+		sg_node_properties['service_graph_name'] = 'SimpleWordPressServiceGraph'
+		sg_node_properties['service_graph_desc'] = 'SGDescription'
 
 		mysql_node_properteis = dict()
 		mysql_node_properteis['use_external_resource'] = True
-		#mysql_node_properteis['external_component_id'] = 'graph_node_mysql_id'
+		mysql_node_properteis['external_component_id'] = 'graph_node_mysql_id'
 
 		wp_node_properteis = dict()
 		wp_node_properteis['use_external_resource'] = True
-		#wp_node_properteis['external_component_id'] = 'graph_node_wordpress_id'
+		wp_node_properteis['external_component_id'] = 'graph_node_wordpress_id'
 
 		rp_node_properteis = dict()
 		rp_node_properteis['use_external_resource'] = True
-		#rp_node_properteis['external_runtime_policy_id'] = 'RPID'
-		#rp_node_properteis['runtime_policy_name'] = 'RPName'
+		rp_node_properteis['external_runtime_policy_id'] = 'RPID'
+		rp_node_properteis['runtime_policy_name'] = 'RPName'
 
 		self.sg_mock = CloudifyWorlkflowNodeInstanceMock(type_hierarchy = srv_graph_type, node_properties = sg_node_properties)
 		self.mysql_mock = CloudifyWorlkflowNodeInstanceMock(type_hierarchy = wrap_comp_type, node_properties = mysql_node_properteis)
@@ -64,19 +65,19 @@ class TestPlugin(unittest.TestCase):
 		facade = ARCADIAClientFacade(api_client = rest_api_mock)
 
 		try:
-			facade.create_comp(mysql_mock)
-			facade.config_comp(mysql_mock)
+			facade.create_comp(self.mysql_mock)
+			facade.config_comp(self.mysql_mock)
 
-			facade.create_comp(wp_mock)
-			facade.config_comp(wp_mock)
+			facade.create_comp(self.wp_mock)
+			facade.config_comp(self.wp_mock)
 
-			facade.create_policy(rp_mock)
-			facade.config_policy(rp_mock)
+			facade.create_policy(self.rp_mock)
+			facade.config_policy(self.rp_mock)
 
-			facade.create_srv_graph(sg_mock)
-			facade.config_srv_graph(sg_mock)
+			facade.create_srv_graph(self.sg_mock)
+			facade.config_srv_graph(self.sg_mock)
 
-			facade.generate_service_graph(sg_mock)
+			facade.generate_service_graph(self.sg_mock)
 			facade.install_service_graph()
 		except ARCADIAServerRequestError:
 			self.assertTrue(False, 'none of the calls should fail')
@@ -89,8 +90,8 @@ class TestPlugin(unittest.TestCase):
 
 		exception_raised = False
 		try:
-			facade.create_comp(mysql_mock)
-			facade.config_comp(mysql_mock)
+			facade.create_comp(self.mysql_mock)
+			facade.config_comp(self.mysql_mock)
 		except ARCADIAServerRequestError:
 			exception_raised = True
 
@@ -102,25 +103,25 @@ class TestPlugin(unittest.TestCase):
 		rest_api_mock.fail_request = False
 		facade = ARCADIAClientFacade(api_client = rest_api_mock)
 
-		facade.create_comp(mysql_mock)
-		facade.config_comp(mysql_mock)
+		facade.create_comp(self.mysql_mock)
+		facade.config_comp(self.mysql_mock)
 
-		facade.create_comp(wp_mock)
-		facade.config_comp(wp_mock)
+		facade.create_comp(self.wp_mock)
+		facade.config_comp(self.wp_mock)
 
-		facade.create_policy(rp_mock)
-		facade.config_policy(rp_mock)
+		facade.create_policy(self.rp_mock)
+		facade.config_policy(self.rp_mock)
 
-		facade.create_srv_graph(sg_mock)
-		facade.config_srv_graph(sg_mock)
+		facade.create_srv_graph(self.sg_mock)
+		facade.config_srv_graph(self.sg_mock)
 
 		rest_api_mock.fail_request = True
 
 		exception_raised = False
 		try:
-			facade.generate_service_graph(sg_mock)
+			facade.generate_service_graph(self.sg_mock)
 			facade.install_service_graph()
 		except ARCADIAServerRequestError:
 			exception_raised = True
 
-		self.assertFalse(exception_raised, 'exception was raised!')
+		self.assertTrue(exception_raised, 'exception was not raised!')

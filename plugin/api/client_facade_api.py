@@ -1,13 +1,16 @@
 from plugin.api.rest_api_client import ARCADIARestAPIClient
 from plugin.utils.tools import Tools
 from plugin.errors.exceptions import ARCADIAServerRequestError
+from plugin.srv_graph.pretty_printer import ARCADIAPrettyPrinter
+from plugin.srv_graph.graph_element import ComponentFactory
+from plugin.srv_graph.graph_builder import GraphBuilder
 
 
 class ARCADIAClientFacade(object):
 	
-	def __init__(self, *args, **kwargs):
-		self._rest_api = ARCADIARestAPIClient()
-		self._pretty_printer = ARCADIAPrettyPrinter()
+	def __init__(self, api_client=None, pretty_printer=None):
+		self._rest_api = api_client if api_client else ARCADIARestAPIClient()
+		self._pretty_printer = pretty_printer if pretty_printer else ARCADIAPrettyPrinter()
 
 	def create_comp(self, _instance):
 		use_external_resource = _instance._node._node.properties['use_external_resource']

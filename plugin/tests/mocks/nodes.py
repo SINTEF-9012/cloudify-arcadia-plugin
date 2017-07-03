@@ -59,7 +59,8 @@ class CloudifyWorlkflowNodeInstanceMock(object):
 
 		self._relationship_instances = collections.OrderedDict()
 
-		properties = dict(kwargs.get('node_properties')) \
+		properties = dict()
+		properties['properties'] = dict(kwargs.get('node_properties')) \
 			if kwargs.get('node_properties') else dict()
 
 		properties['type_hierarchy'] = list(kwargs.get('type_hierarchy')) \

@@ -3,6 +3,9 @@ from plugin.srv_graph.pretty_printer import ARCADIAPrettyPrinter
 from plugin.srv_graph.graph_element import ComponentFactory
 from plugin.srv_graph.graph_element import ComponentFactoryFacade
 from plugin.srv_graph.graph_builder import GraphBuilder
+from plugin.api.responses import ARCADIACompResponse
+
+from mock import MagicMock
 
 
 class ARCADIAClientMock(object):
@@ -55,6 +58,7 @@ class ARCADIAClientMock(object):
 		self._service_graph_printed = self._service_graph_tree.print_element()
 
 
+
 class ARCADIARestAPIClientMock(object):
 	
 	def __init__(self, *args, **kwargs):
@@ -63,8 +67,23 @@ class ARCADIARestAPIClientMock(object):
 	def get_component_info(self, cnid):
 		if self.fail_request:
 			return {'rc' : 1, 'message' : 'failed to request server, wrong params'}
+
+		mock_response = MagicMock(spec=ARCADIACompResponse)
+
+		if cnid == 'graph_node_mysql_id':
+			#no
+			pass
+		elif cnid == 'graph_node_wordpress_id':
+			mock_response.cepcid = 'mysqltcp_cepcid'
+			mock_response.ecepid = 'mysqltcp'
+		else:
+			raise NotImplementedError('id is not known: ' + cnid)
 		
-		
+		return {'rc' : 0, 'message' : 'SUCCESS', 'response' : mock_response}
+
 
 	def register_service_graph(self, service_tree):
-		pass
+		if self.fail_request:
+			return {'rc' : 1, 'message' : 'failed to request server, wrong params'}
+
+		return {'rc' : 0, 'message' : 'SUCCESS'}
