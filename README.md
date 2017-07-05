@@ -3,4 +3,10 @@
 [![Build Status](https://travis-ci.org/SINTEF-9012/cloudify-arcadia-plugin.svg?branch=master)](https://travis-ci.org/SINTEF-9012/cloudify-arcadia-plugin)
 
 # cloudify-arcadia-plugin
-cloudify plugin for arcadia test
+This is a cloudify plugin for the ARCADIA Framework. The plugin allows describing an arcadia service graph in the TOSCA format and perform deployment of the service graph. 
+
+## Testing
+To excute test cases, use the following command:
+```
+tox -e py27local
+```
