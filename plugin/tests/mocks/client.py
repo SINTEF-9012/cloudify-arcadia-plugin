@@ -65,25 +65,27 @@ class ARCADIARestAPIClientMock(object):
 		self.fail_request = False
 
 	def get_component_info(self, cnid):
+		#simulating a failure call
 		if self.fail_request:
 			return {'rc' : 1, 'message' : 'failed to request server, wrong params'}
 
+		#simulating a success call
 		mock_response = MagicMock(spec=ARCADIACompResponse)
-
 		if cnid == 'graph_node_mysql_id':
 			#no
 			pass
 		elif cnid == 'graph_node_wordpress_id':
 			mock_response.cepcid = 'mysqltcp_cepcid'
 			mock_response.ecepid = 'mysqltcp'
-		else:
-			raise NotImplementedError('id is not known: ' + cnid)
 		
 		return {'rc' : 0, 'message' : 'SUCCESS', 'response' : mock_response}
 
 
 	def register_service_graph(self, service_tree):
+		#simulating a failure call
 		if self.fail_request:
 			return {'rc' : 1, 'message' : 'failed to request server, wrong params'}
+
+		#simulatiing a success call
 
 		return {'rc' : 0, 'message' : 'SUCCESS'}
