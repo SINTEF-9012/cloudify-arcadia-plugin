@@ -40,5 +40,6 @@ setup(
     test_requires=[
         "cloudify-dsl-parser>=3.4.2"
         "nose"
+        "mock>=2.0.0"
     ]
 )
