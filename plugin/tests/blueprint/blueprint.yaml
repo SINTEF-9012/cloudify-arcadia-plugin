@@ -89,7 +89,7 @@ node_templates:
     service_graph: 
         type: cloudify.arcadia.nodes.ServiceGraph
         properties:
-            use_external_resource: { get_input: default_use_exernal_resource }
+            use_external_resource: false
             external_service_graph_id: { get_input: sg_arcadia_id }
             service_graph_name: { get_input: sg_arcadia_name }
             service_graph_desc: { get_input: sg_arcadia_desc }
@@ -97,6 +97,7 @@ node_templates:
     runtime_policy:
         type: cloudify.arcadia.nodes.RuntimePolicy
         properties:
+            use_external_resource: { get_input: default_use_exernal_resource }
             external_runtime_policy_id: { get_input:  rp_arcadia_id }
             runtime_policy_name: { get_input:  rp_arcadia_name }
         relationships:

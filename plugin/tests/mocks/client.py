@@ -65,11 +65,11 @@ class ARCADIARestAPIClientMock(object):
 		self.fail_request = False
 
 	def get_component_info(self, cnid):
-		#simulating a failure call
+		#simulating results from a failure call
 		if self.fail_request:
 			return {'rc' : 1, 'message' : 'failed to request server, wrong params'}
 
-		#simulating a success call
+		#simulating results from a success call
 		mock_response = MagicMock(spec=ARCADIACompResponse)
 		if cnid == 'graph_node_mysql_id':
 			#no
@@ -82,10 +82,10 @@ class ARCADIARestAPIClientMock(object):
 
 
 	def register_service_graph(self, service_tree):
-		#simulating a failure call
+		#simulating results from a failure call
 		if self.fail_request:
 			return {'rc' : 1, 'message' : 'failed to request server, wrong params'}
 
-		#simulatiing a success call
+		#simulatiing results from a success call
 
 		return {'rc' : 0, 'message' : 'SUCCESS'}
