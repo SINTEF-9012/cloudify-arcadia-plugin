@@ -1,0 +1,127 @@
+# DSL version, should appear in the main blueprint.yaml
+# and may appear in other imports. In such case, the versions must match
+tosca_definitions_version: cloudify_dsl_1_3
+
+imports:
+    # importing cloudify related types, plugins, workflow, etc...
+    # to speed things up, it is possible downloading this file,
+    # including it in the blueprint directory and importing it
+    # instead.
+    - http://www.getcloudify.org/spec/cloudify/3.4.2/types.yaml
+    # relative import of plugin.yaml that resides in the blueprint directory
+    - test_plugin.yaml
+
+inputs:
+#    # example input that could be injected by test
+#    test_input:
+#        description: an input for the test
+#        default: default_test_input
+
+    default_use_exernal_resource:
+        type: boolean
+        default: true
+
+    mysql_comp_jar_path:
+        type: string
+        default: "~/home/vassik/mysql_arcadia.jar"
+
+    wordpress_comp_jar_path:
+        type: string
+        default: "~/home/vassik/mysql_arcadia.jar"
+
+    mysql_arcadia_component:
+        type: string
+        default: "graph_node_mysql_id"
+
+    wordpress_arcadia_component:
+        type: string
+        default: "graph_node_wordpress_id"
+
+    sg_arcadia_id:
+        type: string
+        default: "wordpress_mysql_service_graph_id"
+
+    sg_arcadia_name:
+        type: string
+        default: "SimpleWordPressServiceGraph"
+
+    sg_arcadia_desc:
+        type: string
+        default: "SGDescription"
+
+    rp_arcadia_id:
+        type: string
+        default: "RPID"
+
+    rp_arcadia_name:
+        type: string
+        default: "RPName"
+
+#node_templates:
+#    # defining a single node template that will serve as our test node
+#    test_node_template:
+#        # using base cloudify type
+#        type: cloudify.nodes.Root
+#        interfaces:
+#            cloudify.interfaces.lifecycle:
+#                start:
+#                    # here we map the single plugin task to the start operation
+#                    # of the cloudify.interfaces.lifecycle interface
+#                    implementation: plugin_name.plugin.tasks.my_task
+#                    inputs:
+#                        # my_task accepts a single property named
+#                        # some property. Here we inject this property
+#                        # from the input provided by the test
+#                        # (or 'default_test_input' if no input was provided)
+#                        some_property: { get_input: test_input }
+
+#outputs:
+#    # example output the could be used to simplify assertions by test
+#    test_output:
+#        description: an output for the test
+#        value: { get_attribute: [test_node_template, some_property] }
+
+relationships:
+    wordpress_connected_to_mysql:
+        derived_from: cloudify.arcadia.relationships.connected_to
+
+node_templates:
+    service_graph: 
+        type: cloudify.arcadia.nodes.ServiceGraph
+        properties:
+            use_external_resource: false
+            external_service_graph_id: { get_input: sg_arcadia_id }
+            service_graph_name: { get_input: sg_arcadia_name }
+            service_graph_desc: { get_input: sg_arcadia_desc }
+
+    runtime_policy:
+        type: cloudify.arcadia.nodes.RuntimePolicy
+        properties:
+            use_external_resource: { get_input: default_use_exernal_resource }
+            external_runtime_policy_id: { get_input:  rp_arcadia_id }
+            runtime_policy_name: { get_input:  rp_arcadia_name }
+        relationships:
+            - type: cloudify.arcadia.relationships.contained_in
+              target: service_graph
+
+    mysql:
+        type: cloudify.arcadia.nodes.WrappedComponent
+        properties:
+            use_external_resource: { get_input: default_use_exernal_resource }
+            component_jar_path: { get_input: mysql_comp_jar_path }
+            external_component_id: { get_input: mysql_arcadia_component }
+        relationships:
+            - type: cloudify.arcadia.relationships.contained_in
+              target: service_graph
+
+    wordpress:
+        type: cloudify.arcadia.nodes.WrappedComponent
+        properties:
+            use_external_resource: { get_input: default_use_exernal_resource }
+            component_jar_path: { get_input: wordpress_comp_jar_path }
+            external_component_id: { get_input: wordpress_arcadia_component}
+        relationships:
+            - type: wordpress_connected_to_mysql
+              target: mysql
+            - type: cloudify.arcadia.relationships.contained_in
+              target: service_graph

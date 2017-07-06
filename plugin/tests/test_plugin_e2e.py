@@ -13,7 +13,7 @@ class TestPlugin(unittest.TestCase):
 		actx._client = None
 		actx._service_graph_tree = None
 
-	@workflow_test(path.join('blueprint', 'blueprint.yaml'),
+	@workflow_test(path.join('blueprint', 'blueprint_e2e.yaml'),
 			resources_to_copy=[path.join('blueprint', 'test_plugin.yaml')])
 	def test_install_arcadia_workflow_e2e(self, cfy_local):
 		cfy_local.execute('install_arcadia', task_retries=0)
