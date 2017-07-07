@@ -46,5 +46,4 @@ class ARCADIARestAPIClient(object):
                                 url=URL,
                                 response=response.text)
 		        return {'rc' : 1, 'message' : message}
-
 		return {'rc' : 0, 'message' : 'SUCCESS'}

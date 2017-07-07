@@ -31,12 +31,6 @@ from plugin.api.policy import ARCADIAPolicyAPI
 from plugin.errors.exceptions import ARCADIAServerRequestError
 
 
-#@operation
-#def my_task(some_property, **kwargs):
-#    # setting node instance runtime property
-#    ctx.instance.runtime_properties['some_property'] = some_property
-
-
 @operation
 def create_component(**kwargs):
 	try:
