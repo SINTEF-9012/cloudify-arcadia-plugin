@@ -39,31 +39,41 @@ from plugin.errors.exceptions import ARCADIAServerRequestError
 
 @operation
 def create_component(**kwargs):
-	#print "!!!!!!!!!!!!!!!!!!!!!!!aaaaaaaaaaaaaaaaaa"
-	#print type(ctx.node.properties)
-	#print ctx.node.properties['use_external_resource']
-	api = ARCADIAComponentAPI(client=actx.client)
-	api.init_component(_instance=actx.components[kwargs.get('id')])
-
+	try:
+		api_comp = ARCADIAComponentAPI(client=actx.client)
+		api_comp.init_component(_instance=actx.components[kwargs.get('id')])
+	except ARCADIAServerRequestError as error:
+		ctx.logger.error(error.message)
+		raise api.ExecutionCancelled(error.message)
 
 @operation
 def create_serv_graph(**kwargs):
-	api = ARCADIAServiceGraphAPI(client=actx.client)
-	api.init_service_graph(_instance=actx.components[kwargs.get('id')])
-	actx.service_graph = actx.components[kwargs.get('id')]
+	try:
+		api_srv = ARCADIAServiceGraphAPI(client=actx.client)
+		api_srv.init_service_graph(_instance=actx.components[kwargs.get('id')])
+		actx.service_graph = actx.components[kwargs.get('id')]
+	except ARCADIAServerRequestError as error:
+		ctx.logger.error(error.message)
+		raise api.ExecutionCancelled(error.message)
 
 
 @operation
 def create_policy(**kwargs):
-	api = ARCADIAPolicyAPI(client=actx.client)
-	api.init_policy(_instance=actx.components[kwargs.get('id')])
-
+	try:
+		api_policy = ARCADIAPolicyAPI(client=actx.client)
+		api_policy.init_policy(_instance=actx.components[kwargs.get('id')])
+	except ARCADIAServerRequestError as error:
+		ctx.logger.error(error.message)
+		raise api.ExecutionCancelled(error.message)
 
 @operation
 def preconfig_rship_source(**kwargs):
-	api = ARCADIARelationshipAPI(client=actx.client)
-	api.preconfig_src_relationship(_instance=actx.relationships[kwargs.get('id')])
-
+	try:
+		api_r = ARCADIARelationshipAPI(client=actx.client)
+		api_r.preconfig_src_relationship(_instance=actx.relationships[kwargs.get('id')])
+	except ARCADIAServerRequestError as error:
+		ctx.logger.error(error.message)
+		raise api.ExecutionCancelled(error.message)
 
 @workflow
 def install_arcadia(operations, **kwargs):

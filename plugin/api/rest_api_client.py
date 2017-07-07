@@ -22,7 +22,7 @@ class ARCADIARestAPIClient(object):
                 response = get(URL + "/components/" + cnid,
                                headers = {"Accept": "application/xml"})
                 if response.status_code not in [200, 204]:
-                        message = ERROR.CANNOT_FETCH_CNID.format(
+                        message = ERROR_CANNOT_FETCH_CNID.format(
                                 cnid=cnid,
                                 response=response.text)
                         return { "rc": 1, "message": message}
