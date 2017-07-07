@@ -2,6 +2,7 @@ import unittest
 from os import path
 from cloudify.test_utils import workflow_test
 from plugin.context import actx
+from plugin.srv_graph.graph_element import ServiceGraphElement
 
 
 class TestPlugin(unittest.TestCase):
@@ -27,7 +28,7 @@ class TestPlugin(unittest.TestCase):
 			for comp in array:
 				if comp._instance._node_instance['name'] == component:
 					return comp
-		return
+			return
 
 		mysql_comp = find_component(service_graph.components, 'mysql')
 		wp_comp = find_component(service_graph.components, 'wordpress')
@@ -38,8 +39,8 @@ class TestPlugin(unittest.TestCase):
 
 		cepcid = mysql_comp._instance._node_instance.runtime_properties.get('cepcid')
 		ecepid = mysql_comp._instance._node_instance.runtime_properties.get('ecepid')
-		self.assertTrue(cepcid == 'mysqltcp_cepcid')
-		self.assertTrue(ecepid == 'mysqltcp')
+		self.assertEquals(cepcid, 'mysqltcp_cepcid')
+		self.assertEquals(ecepid, 'mysqltcp')
 
 		cepcid = wp_comp._instance._node_instance.runtime_properties.get('cepcid')
 		ecepid = wp_comp._instance._node_instance.runtime_properties.get('ecepid')

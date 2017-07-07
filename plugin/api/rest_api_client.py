@@ -3,7 +3,7 @@ from plugin.api.responses import ARCADIACompResponse
 from requests import post, codes
 
 
-HOST_NAME = "34.250.221.100"
+HOST_NAME = "127.0.0.1"
 PORT = 80
 
 URL = "http://{host}:{port}".format(
