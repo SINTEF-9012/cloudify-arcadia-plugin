@@ -2,6 +2,7 @@ import unittest
 from os import path
 from cloudify.test_utils import workflow_test
 from plugin.context import actx
+from plugin.srv_graph.graph_element import ServiceGraphElement
 
 
 class TestPlugin(unittest.TestCase):
