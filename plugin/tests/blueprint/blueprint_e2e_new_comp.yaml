@@ -19,7 +19,7 @@ inputs:
 
     default_use_exernal_resource:
         type: boolean
-        default: true
+        default: false
 
     mysql_comp_jar_path:
         type: string
@@ -32,6 +32,14 @@ inputs:
     mysql_arcadia_component:
         type: string
         default: "graph_node_mysql_id"
+
+    mysql_arcadia_component_cepcid:
+        type: string
+        default: "mysqltcp_cepcid_new_comp"
+
+    mysql_arcadia_component_ecepid:
+        type: string
+        default: "mysqltcp_ecepid_new_comp" 
 
     wordpress_arcadia_component:
         type: string
@@ -86,6 +94,8 @@ node_templates:
             use_external_resource: { get_input: default_use_exernal_resource }
             component_jar_path: { get_input: mysql_comp_jar_path }
             external_component_id: { get_input: mysql_arcadia_component }
+            component_cepcid: {get_input: mysql_arcadia_component_cepcid}
+            component_ecepid: {get_input: mysql_arcadia_component_ecepid}
         relationships:
             - type: cloudify.arcadia.relationships.contained_in
               target: service_graph
