@@ -31,7 +31,7 @@ inputs:
 
     mysql_arcadia_component:
         type: string
-        default: "graph_node_mysql_id"
+        default: "graph_node_mysql_id_new_comp"
 
     mysql_arcadia_component_cepcid:
         type: string
@@ -43,11 +43,11 @@ inputs:
 
     wordpress_arcadia_component:
         type: string
-        default: "graph_node_wordpress_id"
+        default: "graph_node_wordpress_id_new_comp"
 
     sg_arcadia_id:
         type: string
-        default: "wordpress_mysql_service_graph_id"
+        default: "wordpress_mysql_service_graph_id_new_comp"
 
     sg_arcadia_name:
         type: string
