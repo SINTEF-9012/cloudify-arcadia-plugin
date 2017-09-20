@@ -98,6 +98,18 @@ node_types:
                 type: string
                 default: ""
                 required: false
+            component_cepcid:
+                description: >
+                    cepcid is read only if use_external_resource is set to false
+                type: string
+                default: ""
+                required: false
+            component_ecepid:
+                description: >
+                    component_ecepid is read only if use_external_resource is set to false
+                type: string
+                default: ""
+                required: false
             parameters:
                 description: >
                     Some parameters
