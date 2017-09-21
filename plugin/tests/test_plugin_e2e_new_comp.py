@@ -40,7 +40,7 @@ class TestPlugin(unittest.TestCase):
 		cepcid = mysql_comp._instance._node_instance.runtime_properties.get('cepcid')
 		ecepid = mysql_comp._instance._node_instance.runtime_properties.get('ecepid')
 		self.assertEquals(cepcid, 'mysqltcp_cepcid_new_comp')
-		self.assertEquals(ecepid, 'mysqltcp_new_comp')
+		self.assertEquals(ecepid, 'mysqltcp_ecepid_new_comp')
 
 		cepcid = wp_comp._instance._node_instance.runtime_properties.get('cepcid')
 		ecepid = wp_comp._instance._node_instance.runtime_properties.get('ecepid')

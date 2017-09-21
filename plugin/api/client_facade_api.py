@@ -21,8 +21,12 @@ class ARCADIAClientFacade(object):
 		use_external_resource = _instance._node._node.properties['use_external_resource']
 		if not use_external_resource:
 			node_name = _instance._node_instance['name']
-			raise NotImplementedError('cannot create a component (not implemented): '\
-				' use_external_resource is set to false for: "' + node_name +'"')
+			component = ComponentFactory().create_component(_instance)
+			component_xml = self._pretty_printer._print_component_standalone(component)
+			result = self._rest_api.register_component(component_xml)
+			if result['rc'] != 0:
+				raise ARCADIAServerRequestError(message = result['message'])
+
 
 	def config_comp(self, _instance):
 		cnid = _instance._node._node.properties['external_component_id']

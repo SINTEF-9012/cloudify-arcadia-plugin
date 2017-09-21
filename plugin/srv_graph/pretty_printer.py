@@ -99,6 +99,16 @@ class ARCADIAPrettyPrinter(ABCPrettyPrinter):
 		result += '  </GraphNode>\n'
 		return result
 
+	def _print_component_standalone(self, component):
+		_instance = component.get_instance()
+		_node = _instance._node._node
+		result = '<Component>'
+		result += '    <CNID>' + _node.properties['external_component_id'] + '</CNID>\n'
+		result += '    <CEPCID>' + _node.properties['component_cepcid'] + '</CEPCID>\n'
+		result += '    <ECEPID>' + _node.properties['component_ecepid'] + '</ECEPID>\n'
+		result += '</Component> \n'
+		return result
+
 	def _print_dependency(self, dependency):
 		_instance = dependency.get_instance()
 		runtime_prop = _instance._relationship_instance['runtime_properties']

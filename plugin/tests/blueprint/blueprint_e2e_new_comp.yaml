@@ -19,7 +19,7 @@ inputs:
 
     default_use_exernal_resource:
         type: boolean
-        default: false
+        default: true
 
     mysql_comp_jar_path:
         type: string
@@ -91,7 +91,7 @@ node_templates:
     mysql:
         type: cloudify.arcadia.nodes.WrappedComponent
         properties:
-            use_external_resource: { get_input: default_use_exernal_resource }
+            use_external_resource: false
             component_jar_path: { get_input: mysql_comp_jar_path }
             external_component_id: { get_input: mysql_arcadia_component }
             component_cepcid: {get_input: mysql_arcadia_component_cepcid}
@@ -103,7 +103,7 @@ node_templates:
     wordpress:
         type: cloudify.arcadia.nodes.WrappedComponent
         properties:
-            use_external_resource: { get_input: default_use_exernal_resource }
+            use_external_resource: false
             component_jar_path: { get_input: wordpress_comp_jar_path }
             external_component_id: { get_input: wordpress_arcadia_component}
         relationships:

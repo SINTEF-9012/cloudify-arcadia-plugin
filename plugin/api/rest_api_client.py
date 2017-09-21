@@ -47,3 +47,15 @@ class ARCADIARestAPIClient(object):
 			return {'rc' : 1, 'message' : message}
 
 		return {'rc' : 0, 'message' : 'SUCCESS'}
+
+	def register_component(self, component_xml):
+		response = post(URL + "/register_component",
+				headers={"content-type": "application/xml"},
+				data=component_xml)
+
+		if response.status_code not in [200, 204]:
+			message = ERROR_CANNOT_POST.format(
+								url=URL,
+								response=response.text)
+
+		return {'rc' : 0, 'message': 'SUCCESS'}
