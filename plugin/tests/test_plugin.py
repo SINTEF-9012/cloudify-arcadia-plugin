@@ -28,9 +28,7 @@ from plugin.srv_graph.graph_element import ComponentFactoryFacade
 from plugin.srv_graph.graph_builder import GraphBuilder
 from plugin.api.client_facade_api import ARCADIAClientFacade
 
-from plugin.srv_graph.pretty_printer import DefaultPrettyPrinter
-from plugin.srv_graph.pretty_printer import ARCADIAPrettyPrinter
-from plugin.srv_graph.pretty_printer import DefaultXMLVisitor
+from plugin.srv_graph.pretty_printer import DefaultXMLPrinter
 from plugin.srv_graph.pretty_printer import ARCADIAXMLPrinter
 
 from plugin.tests.mocks.nodes import CloudifyWorlkflowNodeInstanceMock
@@ -129,7 +127,7 @@ class TestPlugin(unittest.TestCase):
          </graph_node>
         </service_graph>
         '''
-        default_pretty_printer = DefaultXMLVisitor()
+        default_pretty_printer = DefaultXMLPrinter()
 
         service_graph = ServiceGraphElement(_instance="service_graph")
         mysql = ComponentElement(_instance="mysql")

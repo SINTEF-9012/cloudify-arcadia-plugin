@@ -1,8 +1,6 @@
 from plugin.abstract.abc_graph_elements import ABCGraphElement
 from plugin.utils.klasses import Singleton
-from plugin.srv_graph.pretty_printer import DefaultXMLVisitor
-from plugin.srv_graph.pretty_printer import DefaultPrettyPrinter
-from plugin.srv_graph.pretty_printer import ARCADIAPrettyPrinter
+from plugin.srv_graph.pretty_printer import DefaultXMLPrinter
 from plugin.srv_graph.pretty_printer import ARCADIAXMLPrinter
 
 
@@ -10,7 +8,7 @@ class GraphElement(ABCGraphElement):
 
 	def __init__(self, _instance=None):
 		self._instance = _instance
-		self._allowed_priners = [DefaultXMLVisitor, DefaultPrettyPrinter, ARCADIAPrettyPrinter, ARCADIAXMLPrinter]
+		self._allowed_priners = [DefaultXMLPrinter, ARCADIAXMLPrinter]
 
 	def accept(self, printer):
 		return len(filter(lambda klass: isinstance(printer, klass), self._allowed_priners)) > 0		
