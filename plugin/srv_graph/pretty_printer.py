@@ -1,10 +1,10 @@
 from plugin.srv_graph.graph_element import *
-from plugin.abstract.abc_pretty_printer import ABCPrettyPrinter
+from plugin.abstract.abc_pretty_printer import ABCPrettyPrinter, ABCXMLPrinter
 import xml.etree.ElementTree as etree
 
 
 
-class DefaultXMLVisitor(ABCPrettyPrinter):
+class DefaultXMLVisitor(ABCXMLPrinter):
 
 	def output_text(self, node):
 		return etree.tostring(node, method='xml')
@@ -105,6 +105,35 @@ class DefaultPrettyPrinter(ABCPrettyPrinter):
 				str(name_source) + "->" + str(name_target) + "\n"
 		result += "  </graph_node_dependency>\n"
 		return result
+
+class ARCADIAXMLPrinter(ABCXMLPrinter):
+
+	def visit_srv_graph(self, service_graph):
+		pass
+
+	def visit_srv_graph_comp(self, component):
+		_instance = component.get_instance()
+		_node_instance = _instance._node_instance
+		etree_component = etree.Element('GraphNode')
+		nid = etree.Element('NID')
+		nid.text = str(_node_instance.runtime_properties['nid'])
+		cnid = etree.Element('CNID')
+		cnid.text = str(_node_instance.runtime_properties['cnid'])
+		etree_component.append(nid)
+		etree_component.append(cnid)
+		for dependency in component.dependencies:
+			etree_dep = self.visit_srv_graph_comp_dep(dependency)
+			etree_component.append(etree_dep)
+		return etree_component
+
+	def visit_srv_graph_policy(self, policy):
+		pass
+
+	def visit_srv_graph_comp_dep(self, dependency):
+		pass
+
+	def visit_component(self, component):
+		pass
 
 
 class ARCADIAPrettyPrinter(ABCPrettyPrinter):

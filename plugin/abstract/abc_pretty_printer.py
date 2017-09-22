@@ -1,10 +1,11 @@
 from abc import ABCMeta
 from abc import abstractmethod
+import xml.etree.ElementTree as etree
+
 
 class GraphVisitor(object):
 
 	__metaclass__ = ABCMeta
-
 
 	@abstractmethod
 	def visit_srv_graph(self, service_graph):
@@ -34,3 +35,11 @@ class ABCPrettyPrinter(GraphVisitor):
 	@abstractmethod
 	def output_text(self, node):
 		pass
+
+
+class ABCXMLPrinter(ABCPrettyPrinter):
+
+	__metaclass__ = ABCMeta
+
+	def output_text(self, node):
+		return etree.tostring(node, method='xml')

@@ -31,6 +31,7 @@ from plugin.api.client_facade_api import ARCADIAClientFacade
 from plugin.srv_graph.pretty_printer import DefaultPrettyPrinter
 from plugin.srv_graph.pretty_printer import ARCADIAPrettyPrinter
 from plugin.srv_graph.pretty_printer import DefaultXMLVisitor
+from plugin.srv_graph.pretty_printer import ARCADIAXMLPrinter
 
 from plugin.tests.mocks.nodes import CloudifyWorlkflowNodeInstanceMock
 from plugin.tests.mocks.nodes import CloudifyWorkflowRelationshipInstanceMock
@@ -155,10 +156,10 @@ class TestPlugin(unittest.TestCase):
         mock_instance = CloudifyWorlkflowNodeInstanceMock()
         mock_instance._node_instance.runtime_properties['nid'] = 'graph_node_mysql_id'
         mock_instance._node_instance.runtime_properties['cnid'] = 'mysql_id'
-        pretty_printer = ARCADIAPrettyPrinter()
-        ComponentFactoryFacade.set_factory(ComponentFactory(pretty_printer))
+        pretty_printer = ARCADIAXMLPrinter()
+        ComponentFactoryFacade.set_factory(ComponentFactory())
         mysql = ComponentFactoryFacade.INSTANCE.create_component(mock_instance)
-        result = mysql.print_element()
+        result = mysql.print_element(pretty_printer)
         self.assertEqual(flatten_str(result), flatten_str(expected_rusult))
 
 
