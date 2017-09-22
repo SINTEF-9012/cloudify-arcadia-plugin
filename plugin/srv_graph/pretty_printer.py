@@ -121,13 +121,13 @@ class ARCADIAXMLPrinter(ABCXMLPrinter):
 	def visit_component(self, component):
 		_instance = component.get_instance()
 		_node = _instance._node._node
-
 		etree_component = etree.Element('Component')
 		etree_cnid = etree.Element('CNID')
 		etree_cnid.text = _node.properties['external_component_id']
 		etree_cepcid = etree.Element('CEPCID')
 		etree_cepcid.text = _node.properties['component_cepcid']
 		etree_ecepid = etree.Element('ECEPID')
+		etree_ecepid.text = _node.properties['component_ecepid']
 		etree_component.append(etree_cnid)
 		etree_component.append(etree_cepcid)
 		etree_component.append(etree_ecepid)
