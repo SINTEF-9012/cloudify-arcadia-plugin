@@ -1,8 +1,70 @@
 from plugin.srv_graph.graph_element import *
 from plugin.abstract.abc_pretty_printer import ABCPrettyPrinter
+import xml.etree.ElementTree as etree
+
+
+
+class DefaultXMLVisitor(ABCPrettyPrinter):
+
+	def output_text(self, node):
+		return etree.tostring(node, method='xml')
+
+	def visit_srv_graph(self, service_graph):
+		_instance = service_graph.get_instance()
+		name = _instance if isinstance(_instance, str) else str(_instance)
+		element_tree = etree.Element('service_graph')
+		element_tree.text = name
+		for component in service_graph.components:
+			element_tree.append(self.visit_srv_graph_comp(component))
+		return element_tree
+
+	def visit_srv_graph_comp(self, component):
+		_instance = component.get_instance()
+		name = _instance if isinstance(_instance, str) else str(_instance)
+		element_tree = etree.Element('graph_node')
+		element_tree.text = name
+		for dependency in component.dependencies:
+			element_tree.append(self.visit_srv_graph_comp_dep(dependency))
+		return element_tree
+
+	def visit_srv_graph_policy(self, policy):
+		element_tree = etree.Element('policy')
+		return element_tree
+
+	def visit_srv_graph_comp_dep(self, dependency):
+		_instance = dependency.source.get_instance() if dependency.source else "Unknown"
+		name_source = _instance if isinstance(_instance, str) else str(_instance)
+		_instance = dependency.target.get_instance() if dependency.target else "Unknown"
+		name_target = _instance if isinstance(_instance, str) else str(_instance)
+		name = str(name_source) + "-" + str(name_target)
+		element_tree = etree.Element('graph_node_dependency')
+		element_tree.text = name
+		return element_tree
+
+	def visit_component(self, component):
+		element_tree = etree.Element('component')
+		return element_tree
 
 
 class DefaultPrettyPrinter(ABCPrettyPrinter):
+
+	def output_text(self, node):
+		pass
+
+	def visit_srv_graph(self, service_graph):
+		pass
+
+	def visit_srv_graph_comp(self, component):
+		pass
+
+	def visit_srv_graph_policy(self, policy):
+		pass
+
+	def visit_srv_graph_comp_dep(self, dependency):
+		pass
+
+	def visit_component(self, component):
+		pass
 
 	def print_pretty(self, node):
 		result = ""
@@ -46,6 +108,24 @@ class DefaultPrettyPrinter(ABCPrettyPrinter):
 
 
 class ARCADIAPrettyPrinter(ABCPrettyPrinter):
+
+	def output_text(self, node):
+		pass
+
+	def visit_srv_graph(self, service_graph):
+		pass
+
+	def visit_srv_graph_comp(self, component):
+		pass
+
+	def visit_srv_graph_policy(self, policy):
+		pass
+
+	def visit_srv_graph_comp_dep(self, dependency):
+		pass
+
+	def visit_component(self, component):
+		pass
 
 	def print_pretty(self, node):
 		result = ""

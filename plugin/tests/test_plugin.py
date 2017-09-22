@@ -30,6 +30,7 @@ from plugin.api.client_facade_api import ARCADIAClientFacade
 
 from plugin.srv_graph.pretty_printer import DefaultPrettyPrinter
 from plugin.srv_graph.pretty_printer import ARCADIAPrettyPrinter
+from plugin.srv_graph.pretty_printer import DefaultXMLVisitor
 
 from plugin.tests.mocks.nodes import CloudifyWorlkflowNodeInstanceMock
 from plugin.tests.mocks.nodes import CloudifyWorkflowRelationshipInstanceMock
@@ -122,25 +123,25 @@ class TestPlugin(unittest.TestCase):
          <graph_node>
          wordpress
           <graph_node_dependency>
-          mysql->wordpress
+          mysql-wordpress
           </graph_node_dependency>
          </graph_node>
         </service_graph>
         '''
-        default_pretty_printer = DefaultPrettyPrinter()
+        default_pretty_printer = DefaultXMLVisitor()
 
-        service_graph = ServiceGraphElement(default_pretty_printer, _instance="service_graph")
-        mysql = ComponentElement(default_pretty_printer, _instance="mysql")
-        wordpress = ComponentElement(default_pretty_printer, _instance="wordpress")
+        service_graph = ServiceGraphElement(_instance="service_graph")
+        mysql = ComponentElement(_instance="mysql")
+        wordpress = ComponentElement(_instance="wordpress")
 
-        dependency = ComponentDependencyElement(default_pretty_printer, mysql, wordpress, "wordpress_to_mysql_realationship")
+        dependency = ComponentDependencyElement(mysql, wordpress, "wordpress_to_mysql_realationship")
 
         wordpress.add_dependency(dependency)
 
         service_graph.add_component(mysql)
         service_graph.add_component(wordpress)
 
-        result = service_graph.print_element()
+        result = service_graph.print_element(default_pretty_printer)
         self.assertEqual(flatten_str(result), flatten_str(expected_result))
 
 
