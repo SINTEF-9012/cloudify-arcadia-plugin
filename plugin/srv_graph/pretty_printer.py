@@ -109,7 +109,28 @@ class DefaultPrettyPrinter(ABCPrettyPrinter):
 class ARCADIAXMLPrinter(ABCXMLPrinter):
 
 	def visit_srv_graph(self, service_graph):
-		pass
+		_instance = service_graph.get_instance()
+		_node_instance = _instance._node_instance
+		etree_sg = etree.Element('ServiceGraph')
+		etree_sg.set('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance')
+		etree_sg.set('xsi:noNamespaceSchemaLocation', 'ArcadiaModellingArtefacts.xsd')
+
+		etree_meta = etree.SubElement(etree_sg, 'DescriptiveSGMetadata')
+		etree_sgid = etree.SubElement(etree_meta, 'SGID')
+		etree_sgid.text = str(_node_instance.runtime_properties['sgid'])
+		etree_name = etree.SubElement(etree_meta, 'SGName')
+		etree_name.text = _node_instance.runtime_properties['sgname']
+		etree_desc = etree.SubElement(etree_meta, 'SGDescription')
+		etree_desc.text = _node_instance.runtime_properties['sgdesc']
+
+		etree_gdesc = etree.SubElement(etree_sg, 'GraphNodeDescriptor')
+		for component in service_graph.components:
+			etree_gdesc.append(self.visit_srv_graph_comp(component))
+
+		etree_rpolicy = etree.SubElement(etree_sg, 'RuntimePolicyDescriptor')
+		for policy in service_graph.policies:
+			etree_rpolicy.append(self.visit_srv_graph_policy(policy))
+		return etree_sg
 
 	def visit_srv_graph_comp(self, component):
 		_instance = component.get_instance()
@@ -127,13 +148,50 @@ class ARCADIAXMLPrinter(ABCXMLPrinter):
 		return etree_component
 
 	def visit_srv_graph_policy(self, policy):
-		pass
+		_instance = policy.get_instance()
+		_node_instance = _instance._node_instance
+		etree_policy = etree.Element('RuntimePolicy')
+		etree_rpid = etree.Element('RPID')
+		etree_rpid.text = str(_node_instance.runtime_properties['rpid'])
+		etree_rname = etree.Element('RPName')
+		etree_rname.text = _node_instance.runtime_properties['rpname']
+
+		etree_policy.append(etree_rpid)
+		etree_policy.append(etree_rname)
+		return etree_policy
 
 	def visit_srv_graph_comp_dep(self, dependency):
-		pass
+		_instance = dependency.get_instance()
+		runtime_prop = _instance._relationship_instance['runtime_properties']
+		_instance_target = dependency.target.get_instance()
+		_node_instance_target = _instance_target._node_instance
+		etree_dep = etree.Element('GraphDependency')
+		etree_cepcid = etree.Element('CEPCID')
+		etree_cepcid.text = _node_instance_target.runtime_properties['cepcid']
+		etree_ecepid = etree.Element('ECEPID')
+		etree_ecepid.text = _node_instance_target.runtime_properties['ecepid']
+		etree_nid = etree.Element('NID')
+		etree_nid.text = str(runtime_prop['nid'])
+
+		etree_dep.append(etree_cepcid)
+		etree_dep.append(etree_ecepid)
+		etree_dep.append(etree_nid)
+		return etree_dep
 
 	def visit_component(self, component):
-		pass
+		_instance = component.get_instance()
+		_node = _instance._node._node
+
+		etree_component = etree.Element('Component')
+		etree_cnid = etree.Element('CNID')
+		etree_cnid.text = _node.properties['external_component_id']
+		etree_cepcid = etree.Element('CEPCID')
+		etree_cepcid.text = _node.properties['component_cepcid']
+		etree_ecepid = etree.Element('ECEPID')
+		etree_component.append(etree_cnid)
+		etree_component.append(etree_cepcid)
+		etree_component.append(etree_ecepid)
+		return etree_component
 
 
 class ARCADIAPrettyPrinter(ABCPrettyPrinter):

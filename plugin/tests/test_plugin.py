@@ -57,7 +57,7 @@ class TestPlugin(unittest.TestCase):
                    resources_to_copy=[path.join('blueprint',
                                                 'test_plugin.yaml')])
     def test_install_arcadia_workflow(self, cfy_local):
-        expected_result = '''<?xml version="1.0" encoding="UTF-8"?>
+        expected_result = '''
             <ServiceGraph xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ArcadiaModellingArtefacts.xsd">
               <DescriptiveSGMetadata>
                 <SGID>wordpress_mysql_service_graph_id</SGID>
@@ -188,12 +188,12 @@ class TestPlugin(unittest.TestCase):
                                                             },
                                                             type_hierarchy = con_to_type)
         
-        ComponentFactoryFacade.set_factory(ComponentFactory(ARCADIAPrettyPrinter()))
+        ComponentFactoryFacade.set_factory(ComponentFactory())
 
         mysql_cmp = ComponentFactoryFacade.INSTANCE.create_component(_instance = mock_instance)
         mysql_dependency = ComponentFactoryFacade.INSTANCE.create_component_dependency(_instance = mock_relationship, _target = mysql_cmp)
 
-        result = mysql_dependency.print_element()
+        result = mysql_dependency.print_element(ARCADIAXMLPrinter())
         self.assertEqual(flatten_str(result), flatten_str(expected_rusult))
 
 
@@ -231,20 +231,19 @@ class TestPlugin(unittest.TestCase):
                                                             },
                                                             type_hierarchy = con_to_type)
 
-        ComponentFactoryFacade.set_factory(ComponentFactory(ARCADIAPrettyPrinter()))
+        ComponentFactoryFacade.set_factory(ComponentFactory())
         wp_cmp = ComponentFactoryFacade.INSTANCE.create_component(_instance = mock_wordpress)
         mysql_cmp = ComponentFactoryFacade.INSTANCE.create_component(_instance = mock_msql)
 
         mysql_dep = ComponentFactoryFacade.INSTANCE.create_component_dependency(_instance = mock_relationship, _source = wp_cmp, _target = mysql_cmp)
         wp_cmp.add_dependency(mysql_dep)
 
-        result = wp_cmp.print_element()
+        result = wp_cmp.print_element(ARCADIAXMLPrinter())
         self.assertEqual(flatten_str(result), flatten_str(expected_rusult))
 
 
     def test_complete_service_graph(self):
         expected_rusult = '''
-            <?xml version="1.0" encoding="UTF-8"?>
             <ServiceGraph xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ArcadiaModellingArtefacts.xsd">
               <DescriptiveSGMetadata>
                 <SGID>wordpress_mysql_service_graph_id</SGID>
@@ -326,10 +325,10 @@ class TestPlugin(unittest.TestCase):
                                                                     node_instance = sg_mock,
                                                                     type_hierarchy = con_in_type)
 
-        graph_builder = GraphBuilder(_comp_factory = ComponentFactory(ARCADIAPrettyPrinter()))
+        graph_builder = GraphBuilder(_comp_factory = ComponentFactory())
         service_graph = graph_builder.build(sg_mock)
 
-        result = service_graph.print_element()
+        result = service_graph.print_element(ARCADIAXMLPrinter())
 
         self.assertEqual(flatten_str(result), flatten_str(expected_rusult))
 
@@ -362,7 +361,7 @@ class TestPlugin(unittest.TestCase):
         rp_mock._relationship_instances['service_graph_gm17g6'] = CloudifyWorkflowRelationshipInstanceMock(node_instance=sg_mock, type_hierarchy=con_in_type)
 
 
-        graph_builder = GraphBuilder(_comp_factory = ComponentFactory(ARCADIAPrettyPrinter()))
+        graph_builder = GraphBuilder(_comp_factory = ComponentFactory())
         service_graph = graph_builder.build(sg_mock)
 
         self.assertTrue(isinstance(service_graph, ServiceGraphElement))

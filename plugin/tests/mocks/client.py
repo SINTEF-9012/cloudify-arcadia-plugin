@@ -1,4 +1,4 @@
-from plugin.srv_graph.pretty_printer import ARCADIAPrettyPrinter
+from plugin.srv_graph.pretty_printer import ARCADIAXMLPrinter
 
 from plugin.srv_graph.graph_element import ComponentFactory
 from plugin.srv_graph.graph_element import ComponentFactoryFacade
@@ -50,12 +50,12 @@ class ARCADIAClientMock(object):
 
 
 	def generate_service_graph(self, _service_graph):
-		factory = ComponentFactory(ARCADIAPrettyPrinter())
+		factory = ComponentFactory()
 		graph_builder = GraphBuilder(_comp_factory = factory)
  		self._service_graph_tree = graph_builder.build(_service_graph)
 
 	def install_service_graph(self):
-		self._service_graph_printed = self._service_graph_tree.print_element()
+		self._service_graph_printed = self._service_graph_tree.print_element(ARCADIAXMLPrinter())
 
 
 
