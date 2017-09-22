@@ -1,7 +1,6 @@
 from plugin.api.rest_api_client import ARCADIARestAPIClient
 from plugin.utils.tools import Tools
 from plugin.errors.exceptions import ARCADIAServerRequestError
-from plugin.srv_graph.pretty_printer import ARCADIAXMLPrinter
 from plugin.srv_graph.graph_element import ComponentFactory
 from plugin.srv_graph.graph_builder import GraphBuilder
 
@@ -13,17 +12,15 @@ class ARCADIAClientFacade(object):
 
 	__metaclass = Singleton
 	
-	def __init__(self, api_client=None, pretty_printer=None):
+	def __init__(self, api_client=None):
 		self._rest_api = api_client if api_client else ARCADIARestAPIClient()
-		self._pretty_printer = pretty_printer if pretty_printer else ARCADIAXMLPrinter()
 
 	def create_comp(self, _instance):
 		use_external_resource = _instance._node._node.properties['use_external_resource']
 		if not use_external_resource:
 			node_name = _instance._node_instance['name']
 			component = ComponentFactory().create_component(_instance)
-			component_xml = self._pretty_printer._print_component_standalone(component)
-			result = self._rest_api.register_component(component_xml)
+			result = self._rest_api.register_component(component)
 			if result['rc'] != 0:
 				raise ARCADIAServerRequestError(message = result['message'])
 
@@ -82,7 +79,7 @@ class ARCADIAClientFacade(object):
 		_instance._relationship_instance['runtime_properties'] = {'nid': Tools.generate_unique_id(_instance)}
 
 	def generate_service_graph(self, _service_graph):
-		factory = ComponentFactory(self._pretty_printer)
+		factory = ComponentFactory()
 		graph_builder = GraphBuilder(_comp_factory = factory)
  		self._service_graph_tree = graph_builder.build(_service_graph)
 

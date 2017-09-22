@@ -2,6 +2,7 @@ from plugin.api.responses import ARCADIACompResponse
 
 from requests import get, post, codes
 import xml.etree.ElementTree as etree
+from plugin.srv_graph.pretty_printer import ARCADIAXMLPrinter
 
 HOST_NAME = "127.0.0.1"
 PORT = 80
@@ -35,7 +36,7 @@ class ARCADIARestAPIClient(object):
 		return {'rc' : 0, 'message' : 'SUCCESS', 'response' : response}
 
 	def register_service_graph(self, service_tree):
-		payload = service_tree.print_element()
+		payload = service_tree.print_element(ARCADIAXMLPrinter())
 		response = post(URL + "/register",
 				headers={"content-type": "application/xml"},
 				data=payload)
@@ -48,10 +49,12 @@ class ARCADIARestAPIClient(object):
 
 		return {'rc' : 0, 'message' : 'SUCCESS'}
 
-	def register_component(self, component_xml):
+	def register_component(self, component):
+		xml_element = ARCADIAXMLPrinter().visit_component(component)
+		payload = ARCADIAXMLPrinter().output_text(xml_element)
 		response = post(URL + "/register_component",
 				headers={"content-type": "application/xml"},
-				data=component_xml)
+				data=payload)
 
 		if response.status_code not in [200, 204]:
 			message = ERROR_CANNOT_POST.format(
