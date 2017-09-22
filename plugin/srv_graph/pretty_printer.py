@@ -1,13 +1,10 @@
 from plugin.srv_graph.graph_element import *
-from plugin.abstract.abc_pretty_printer import ABCPrettyPrinter, ABCXMLPrinter
+from plugin.abstract.abc_pretty_printer import ABCXMLPrinter
 import xml.etree.ElementTree as etree
 
 
 
 class DefaultXMLPrinter(ABCXMLPrinter):
-
-	def output_text(self, node):
-		return etree.tostring(node, method='xml')
 
 	def visit_srv_graph(self, service_graph):
 		_instance = service_graph.get_instance()

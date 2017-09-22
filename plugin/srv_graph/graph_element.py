@@ -9,8 +9,8 @@ class GraphElement(ABCGraphElement):
 		self._instance = _instance
 		self._allowed_priners = ['DefaultXMLPrinter', 'ARCADIAXMLPrinter']
 
-	def accept(self, printer):
-		return len(filter(lambda klass_name: printer.__class__.__name__ == klass_name, self._allowed_priners)) > 0		
+	def accept(self, visitor):
+		return len(filter(lambda klass_name: visitor.__class__.__name__ == klass_name, self._allowed_priners)) > 0		
 
 	def get_instance(self):
 		return self._instance
