@@ -1,6 +1,7 @@
 from abc import ABCMeta
 from abc import abstractmethod
-import xml.etree.ElementTree as etree
+#import xml.etree.ElementTree as etree
+from lxml import etree
 
 
 class GraphVisitor(object):

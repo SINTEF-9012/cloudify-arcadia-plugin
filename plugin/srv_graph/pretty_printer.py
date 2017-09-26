@@ -1,6 +1,7 @@
 from plugin.srv_graph.graph_element import *
 from plugin.abstract.abc_pretty_printer import ABCXMLPrinter
-import xml.etree.ElementTree as etree
+#import xml.etree.ElementTree as etree
+from lxml import etree
 
 
 
@@ -48,9 +49,12 @@ class ARCADIAXMLPrinter(ABCXMLPrinter):
 	def visit_srv_graph(self, service_graph):
 		_instance = service_graph.get_instance()
 		_node_instance = _instance._node_instance
-		etree_sg = etree.Element('ServiceGraph')
-		etree_sg.set('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance')
-		etree_sg.set('xsi:noNamespaceSchemaLocation', 'ArcadiaModellingArtefacts.xsd')
+		xsi = "http://www.w3.org/2001/XMLSchema-instance"
+		schemaLocation = "ArcadiaModellingArtefacts.xsd"
+		etree_sg = etree.Element('ServiceGraph', nsmap = {'xsi' : xsi},
+				attrib={"{" + xsi + "}noNamespaceSchemaLocation" : schemaLocation})
+		#etree_sg.set('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance')
+		#etree_sg.set('xsi:noNamespaceSchemaLocation', 'ArcadiaModellingArtefacts.xsd')
 
 		etree_meta = etree.SubElement(etree_sg, 'DescriptiveSGMetadata')
 		etree_sgid = etree.SubElement(etree_meta, 'SGID')

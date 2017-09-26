@@ -3,3 +3,4 @@
 -e git+https://github.com/cloudify-cosmo/cloudify-plugins-common@3.4.2#egg=cloudify-plugins-common==3.4.2
 nose
 mock==2.0.0
+lxml>=2.7.0
