@@ -1,7 +1,8 @@
 from plugin.api.responses import ARCADIACompResponse
 
 from requests import get, post, codes
-import xml.etree.ElementTree as etree
+#import xml.etree.ElementTree as etree
+from lxml import etree
 from plugin.srv_graph.pretty_printer import ARCADIAXMLPrinter
 
 HOST_NAME = "127.0.0.1"

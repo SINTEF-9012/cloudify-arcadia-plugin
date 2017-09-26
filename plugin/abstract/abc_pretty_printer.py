@@ -43,4 +43,4 @@ class ABCXMLPrinter(ABCPrettyPrinter):
 	__metaclass__ = ABCMeta
 
 	def output_text(self, node):
-		return etree.tostring(node, method='xml')
+		return etree.tostring(node, method='xml', pretty_print=True)
